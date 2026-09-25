@@ -22,6 +22,7 @@
   $$('#fret-options input').forEach(el=>el.addEventListener('change',()=>{settings.frets=$$('#fret-options input:checked').map(x=>Number(x.dataset.fret));changeScope();}));
   $$('#string-presets button').forEach(el=>el.addEventListener('click',()=>{settings.strings=el.dataset.strings.split(',').map(Number);changeScope();}));
   $$('#fret-presets button').forEach(el=>el.addEventListener('click',()=>{const sets={all:Array.from({length:13},(_,i)=>i),dots:[3,5,7,9,12],low:[0,1,2,3,4,5],mid:[5,6,7,8,9],high:[9,10,11,12]};settings.frets=sets[el.dataset.frets].slice();changeScope();}));
+  $('#highlight-range').addEventListener('change',e=>{settings.highlightRange=e.target.checked;save();render();});
   $('#show-tuning').addEventListener('change',e=>{settings.showTuning=e.target.checked;save();render();});
   $('#natural-only').addEventListener('change',e=>{settings.naturalOnly=e.target.checked;changeScope();});
   $('#open-strings').addEventListener('change',e=>{settings.frets=settings.frets.filter(n=>n!==0);if(e.target.checked)settings.frets.unshift(0);changeScope();});
@@ -47,7 +48,7 @@
     if(correct)label+=' 正解';if(wrong)label+=' 選択した位置';
     const inlay=dots.includes(f)&&((f!==12&&s===3)||(f===12&&(s===2||s===4)));
     const clickable=reverse&&!revealed&&active;
-    html+=`<button type="button" class="cell ${f===0?'open':''} ${active?'':'outside'} ${inlay?'inlay':''}" style="--string-size:${.6+s*.37}px" data-position="${s}:${f}" aria-label="${label}" ${clickable?'':'aria-disabled="true"'} tabindex="${clickable&&cursor&&C.key(cursor)===C.key(p)?0:-1}">${showName||showTarget?`<span class="note ${noteClass}">${showName?noteHTML(p):'?'}</span>`:''}</button>`;
+    html+=`<button type="button" class="cell ${f===0?'open':''} ${!active&&settings.highlightRange?'outside':''} ${inlay?'inlay':''}" style="--string-size:${.6+s*.37}px" data-position="${s}:${f}" aria-label="${label}" ${clickable?'':'aria-disabled="true"'} tabindex="${clickable&&cursor&&C.key(cursor)===C.key(p)?0:-1}">${showName||showTarget?`<span class="note ${noteClass}">${showName?noteHTML(p):'?'}</span>`:''}</button>`;
    }
   }
   html+='<div></div>';for(let f=0;f<=12;f++)html+=`<div class="dot-row">${dots.includes(f)?'<i></i>':''}${f===12?'<i></i>':''}</div>`;
@@ -65,6 +66,7 @@
   $$('#fret-options input').forEach(el=>el.checked=settings.frets.includes(Number(el.dataset.fret)));
   $('#open-strings').checked=settings.frets.includes(0);
   $('#natural-only').checked=settings.naturalOnly;
+  $('#highlight-range').checked=settings.highlightRange;
   $('#show-tuning').checked=settings.showTuning;
   $('.tuning').hidden=!settings.showTuning;
   $$('input[name=notation]').forEach(el=>el.checked=el.value===settings.notation);
@@ -78,8 +80,8 @@
   $('#progress-fill').style.width=study?'100%':count?`${(index+1)/count*100}%`:'0%';
   $('#question-kicker').textContent=study?'FRETBOARD MAP':reverse?'FIND THE NOTE':'NAME THE NOTE';
   $('#question').textContent=study?'音名を、見渡そう。':!target?'練習する範囲を選ぼう。':reverse?`${target.string}弦の ${C.name(target,settings.notation)} はどこ？`:'この位置の音名は？';
-  $('#question-help').textContent=study?'選択中の範囲を明るく表示しています。':!target?'弦・フレットを選ぶか、ナチュラル音の条件を変更してください。':reverse?'指板上の位置をタップして回答。分からなければ答えを表示。':'頭の中で思い浮かべてから、答えを表示。';
-  $('#board-legend').textContent=study?'選択中の範囲':reverse?(revealed?'正解位置':'指板を選択'):'出題位置';
+  $('#question-help').textContent=study?(settings.highlightRange?'選択中の範囲を明るく表示しています。':'すべての位置の音名を同じ明るさで表示しています。'):!target?'弦・フレットを選ぶか、ナチュラル音の条件を変更してください。':reverse?'指板上の位置をタップして回答。分からなければ答えを表示。':'頭の中で思い浮かべてから、答えを表示。';
+  $('#board-legend').textContent=study?(settings.highlightRange?'選択中の範囲':'全音名'):reverse?(revealed?'正解位置':'指板を選択'):'出題位置';
   $('#shuffle-label').textContent=study?'標準チューニング / 0〜12F':'一巡するまで、重複なし';
   const answerArea=$('#answer-area');
   if(!target){answerArea.innerHTML='<span class="answer-placeholder">出題対象がありません</span>';}

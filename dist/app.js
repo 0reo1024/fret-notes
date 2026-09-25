@@ -12,7 +12,7 @@
  function next(){if(!current())return;if(index+1<deck.length)index++;else{deck=C.shuffled(C.candidates(settings),current());index=0;round++;}revealed=false;chosen=null;cursor=null;render();}
  function reveal(){if(!current()||settings.mode==='study')return;revealed=true;render();}
  function primary(){if(revealed)next();else reveal();}
- function answer(p){if(settings.mode!=='reverse'||revealed||!allowed(p))return;chosen=p;revealed=true;render();}
+ function answer(p){if(settings.mode!=='reverse'||!current())return;if(revealed){next();return;}if(!allowed(p))return;chosen=p;revealed=true;render();}
  function changeScope(){save();reset();}
  function noteHTML(p){const n=C.name(p,settings.notation).split(' / ');return n.length===1?n[0]:`${n[0]}<small>${n[1]}</small>`;}
  function buildControls(){
@@ -47,7 +47,8 @@
     if(showName)label+=` ${C.name(p,settings.notation)}`;if(showTarget&&!revealed)label+=' 出題位置';
     if(correct)label+=' 正解';if(wrong)label+=' 選択した位置';
     const inlay=dots.includes(f)&&((f!==12&&s===3)||(f===12&&(s===2||s===4)));
-    const clickable=reverse&&!revealed&&active;
+    const clickable=reverse&&!!target&&(revealed||active);
+    if(reverse&&revealed)label+=' 次の問題へ';
     html+=`<button type="button" class="cell ${f===0?'open':''} ${!active&&settings.highlightRange?'outside':''} ${inlay?'inlay':''}" style="--string-size:${.6+s*.37}px" data-position="${s}:${f}" aria-label="${label}" ${clickable?'':'aria-disabled="true"'} tabindex="${clickable&&cursor&&C.key(cursor)===C.key(p)?0:-1}">${showName||showTarget?`<span class="note ${noteClass}">${showName?noteHTML(p):'?'}</span>`:''}</button>`;
    }
   }
@@ -80,7 +81,7 @@
   $('#progress-fill').style.width=study?'100%':count?`${(index+1)/count*100}%`:'0%';
   $('#question-kicker').textContent=study?'FRETBOARD MAP':reverse?'FIND THE NOTE':'NAME THE NOTE';
   $('#question').textContent=study?'音名を、見渡そう。':!target?'練習する範囲を選ぼう。':reverse?`${target.string}弦の ${C.name(target,settings.notation)} はどこ？`:'この位置の音名は？';
-  $('#question-help').textContent=study?(settings.highlightRange?'選択中の範囲を明るく表示しています。':'すべての位置の音名を同じ明るさで表示しています。'):!target?'弦・フレットを選ぶか、ナチュラル音の条件を変更してください。':reverse?'指板上の位置をタップして回答。分からなければ答えを表示。':'頭の中で思い浮かべてから、答えを表示。';
+  $('#question-help').textContent=study?(settings.highlightRange?'選択中の範囲を明るく表示しています。':'すべての位置の音名を同じ明るさで表示しています。'):!target?'弦・フレットを選ぶか、ナチュラル音の条件を変更してください。':reverse?(revealed?'指板上のどこかをタップすると、次の問題へ進みます。':'指板上の位置をタップして回答。分からなければ答えを表示。'):'頭の中で思い浮かべてから、答えを表示。';
   $('#board-legend').textContent=study?(settings.highlightRange?'選択中の範囲':'全音名'):reverse?(revealed?'正解位置':'指板を選択'):'出題位置';
   $('#shuffle-label').textContent=study?'標準チューニング / 0〜12F':'一巡するまで、重複なし';
   const answerArea=$('#answer-area');

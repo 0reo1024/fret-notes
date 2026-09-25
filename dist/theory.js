@@ -52,8 +52,18 @@
   pattern('diminished-wh','ディミニッシュ（全音→半音）','R 2 ♭3 4 ♭5 ♭6 6 7','','対称スケール'),
   pattern('diminished-hw','コンディミ（半音→全音）','R ♭9 ♯9 3 ♯11 5 13 ♭7','','対称スケール')
  ];
- function normalize(data){return {studyView:['all','chord','scale'].includes(data?.studyView)?data.studyView:'all',studyRoot:roots.includes(data?.studyRoot)?data.studyRoot:'C',studyChord:chords.some(p=>p.id===data?.studyChord)?data.studyChord:'major',studyScale:scales.some(p=>p.id===data?.studyScale)?data.studyScale:'ionian',toneLabels:['both','name','degree'].includes(data?.toneLabels)?data.toneLabels:'both'};}
+ function normalizeLayer(layer){
+  const kind=layer?.kind==='chord'?'chord':'scale',catalog=kind==='chord'?chords:scales;
+  return {kind,root:roots.includes(layer?.root)?layer.root:'C',pattern:catalog.some(p=>p.id===layer?.pattern)?layer.pattern:catalog[0].id};
+ }
+ function normalize(data){return {studyView:['all','chord','scale'].includes(data?.studyView)?data.studyView:'all',studyRoot:roots.includes(data?.studyRoot)?data.studyRoot:'C',studyChord:chords.some(p=>p.id===data?.studyChord)?data.studyChord:'major',studyScale:scales.some(p=>p.id===data?.studyScale)?data.studyScale:'ionian',toneLabels:['both','name','degree'].includes(data?.toneLabels)?data.toneLabels:'both',studyLayers:Array.isArray(data?.studyLayers)?data.studyLayers.slice(0,3).map(normalizeLayer):[]};}
  function selected(settings){return settings.studyView==='chord'?chords.find(p=>p.id===settings.studyChord):settings.studyView==='scale'?scales.find(p=>p.id===settings.studyScale):null;}
- function tones(settings){const p=selected(settings);return p?p.degrees.map(degree=>({degree,name:spell(settings.studyRoot,degree),pitch:mod(pitchOf(settings.studyRoot)+interval(degree))})):[];}
- const api={roots,chords,scales,normalize,selected,tones,pitchOf,interval,spell};root.FretTheory=api;if(typeof module!=='undefined')module.exports=api;
+ function tonesFor(rootName,pattern){return pattern.degrees.map(degree=>({degree,name:spell(rootName,degree),pitch:mod(pitchOf(rootName)+interval(degree))}));}
+ function tones(settings){const p=selected(settings);return p?tonesFor(settings.studyRoot,p):[];}
+ function layers(settings){
+  const primary=selected(settings);if(!primary)return [];
+  const entries=[{kind:settings.studyView,root:settings.studyRoot,pattern:primary},...(settings.studyLayers||[]).map(layer=>({kind:layer.kind,root:layer.root,pattern:(layer.kind==='chord'?chords:scales).find(p=>p.id===layer.pattern)}))];
+  return entries.filter(entry=>entry.pattern).map((entry,index)=>({...entry,index,tones:tonesFor(entry.root,entry.pattern)}));
+ }
+ const api={roots,chords,scales,normalize,selected,tones,layers,pitchOf,interval,spell};root.FretTheory=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

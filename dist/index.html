@@ -24,6 +24,8 @@
    <label class="pattern-picker"><span id="pattern-label">コード</span><select id="study-pattern" aria-labelledby="pattern-label"></select></label>
    <label>指板の表示<select id="tone-labels"><option value="both">音名＋度数</option><option value="name">音名</option><option value="degree">度数</option></select></label>
   </div>
+  <div id="comparison-layers" class="comparison-layers" hidden></div>
+  <button id="add-layer" class="add-layer" type="button" hidden>＋ 比較対象を追加</button>
   <div id="theory-summary" aria-live="polite" aria-atomic="true" hidden><div id="tone-list" class="tone-list"></div><p id="pattern-description" class="pattern-description"></p><p class="theory-note">R＝ルート。構成音はルートと度数に沿って表記します（E♯・B♭♭など）。</p><p class="theory-note">指板は構成音の位置を示します。コードの押さえ方・運指の指定ではありません。</p></div>
  </section>
  <div class="board-shell"><div id="board" class="board" aria-label="ギター指板 0〜12フレット"></div></div>

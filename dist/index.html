@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="指板上の音名を、自分のペースで。位置から音名、音名から位置、全音名の3つのモードで練習できます。">
+<title>Fret Notes — 指板トレーニング</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23131c21'/%3E%3Cpath d='M9 6v20M21 6v20M5 12h22M5 21h22' stroke='%23809299'/%3E%3Ccircle cx='15' cy='17' r='5' fill='%23d7f57a'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css"><script src="core.js" defer></script><script src="app.js" defer></script>
+</head>
+<body>
+<div class="app">
+ <header class="header"><a class="brand" href="./"><span class="brand-icon" aria-hidden="true">♮</span>Fret Notes<span class="brand-jp">指板トレーニング</span></a><span class="tuning">STANDARD <span>E A D G B E</span></span></header>
+ <main>
+ <div class="topline"><div><p class="eyebrow">GUITAR PRACTICE</p><h1>指板を、自分のものに。</h1></div><button id="settings-toggle" class="settings-toggle" aria-expanded="false" aria-controls="settings">出題範囲・設定 <span aria-hidden="true">⚙</span></button></div>
+ <nav class="modes" aria-label="学習モード"><button data-mode="forward" class="mode active" aria-pressed="true"><span class="mode-num">01</span>位置 → 音名</button><button data-mode="reverse" class="mode" aria-pressed="false"><span class="mode-num">02</span>音名 → 位置</button><button data-mode="study" class="mode" aria-pressed="false"><span class="mode-num">03</span>全音名表示</button></nav>
+ <div class="workspace">
+ <section class="practice" aria-label="練習">
+ <div class="session-line"><span id="mode-label">位置から音名を思い出す</span><span id="progress-label"></span></div><div class="progress-track"><div id="progress-fill"></div></div>
+ <div class="question-area"><p id="question-kicker"></p><h2 id="question"></h2><p id="question-help"></p></div>
+ <div class="board-shell"><div id="board" class="board" aria-label="ギター指板 0〜12フレット"></div></div>
+ <div class="board-caption"><span><i class="legend-dot"></i><span id="board-legend">出題位置</span></span><span>上：1弦 · 下：6弦 <span class="scroll-hint">／ 横にスクロールできます</span></span></div>
+ <div id="answer-area" class="answer-area" aria-live="polite" aria-atomic="true"></div>
+ <div class="actions"><button id="primary" class="primary">答えを表示 <span aria-hidden="true">↵</span></button><span class="keyboard-hint"><kbd>Space</kbd> で表示・次へ</span></div>
+ <div class="practice-footer"><span id="scope-summary"></span><span id="shuffle-label">一巡するまで、重複なし</span></div>
+ </section>
+ <aside id="settings" class="settings" aria-label="出題設定">
+ <div class="settings-heading"><h2>練習範囲</h2><span id="candidate-count"></span></div>
+ <fieldset><legend>弦</legend><div id="string-options" class="string-options"></div><div class="presets" id="string-presets"><button data-strings="1,2,3,4,5,6">全弦</button><button data-strings="5,6">6・5弦</button><button data-strings="3,4">4・3弦</button><button data-strings="1,2">2・1弦</button></div></fieldset>
+ <fieldset><legend>フレット</legend><div class="presets fret-presets" id="fret-presets"><button data-frets="all">全フレット</button><button data-frets="dots">ドット位置</button><button data-frets="low">0〜5</button><button data-frets="mid">5〜9</button><button data-frets="high">9〜12</button></div><div id="fret-options" class="fret-options"></div><label class="open-toggle"><span>開放弦を含める <small>0フレット</small></span><input id="open-strings" type="checkbox" role="switch"></label><p class="setting-note">ドット位置：3・5・7・9・12F</p></fieldset>
+ <fieldset><legend>音名の表記</legend><div id="notation-options" class="notation-options"><label><input type="radio" name="notation" value="both">両方</label><label><input type="radio" name="notation" value="sharp">♯</label><label><input type="radio" name="notation" value="flat">♭</label></div><p class="setting-note" id="notation-example">例：C♯ / D♭</p></fieldset>
+ <p class="saved-note" id="save-status">設定はこのブラウザーに自動保存</p>
+ </aside>
+ </div>
+ <footer class="page-footer"><span>FRET NOTES</span><p>急がず、ひとつずつ。音名と位置をつなげよう。</p></footer>
+ </main>
+</div>
+</body></html>

@@ -22,6 +22,7 @@
   $$('#fret-options input').forEach(el=>el.addEventListener('change',()=>{settings.frets=$$('#fret-options input:checked').map(x=>Number(x.dataset.fret));changeScope();}));
   $$('#string-presets button').forEach(el=>el.addEventListener('click',()=>{settings.strings=el.dataset.strings.split(',').map(Number);changeScope();}));
   $$('#fret-presets button').forEach(el=>el.addEventListener('click',()=>{const sets={all:Array.from({length:13},(_,i)=>i),dots:[3,5,7,9,12],low:[0,1,2,3,4,5],mid:[5,6,7,8,9],high:[9,10,11,12]};settings.frets=sets[el.dataset.frets].slice();changeScope();}));
+  $('#show-tuning').addEventListener('change',e=>{settings.showTuning=e.target.checked;save();render();});
   $('#natural-only').addEventListener('change',e=>{settings.naturalOnly=e.target.checked;changeScope();});
   $('#open-strings').addEventListener('change',e=>{settings.frets=settings.frets.filter(n=>n!==0);if(e.target.checked)settings.frets.unshift(0);changeScope();});
   $$('input[name=notation]').forEach(el=>el.addEventListener('change',()=>{settings.notation=el.value;save();render();}));
@@ -34,7 +35,7 @@
   for(let f=0;f<=12;f++)html+=`<div class="fret-label ${dots.includes(f)?'marked':''}">${f===0?'0 開放':f}</div>`;
   const openNames=['E','B','G','D','A','E'];
   for(let s=1;s<=6;s++){
-   html+=`<div class="string-label">${s}<strong>${openNames[s-1]}</strong></div>`;
+   html+=`<div class="string-label">${s}${settings.showTuning?`<strong>${openNames[s-1]}</strong>`:''}</div>`;
    for(let f=0;f<=12;f++){
     const p={string:s,fret:f},active=allowed(p),istarget=target&&C.key(target)===C.key(p),study=settings.mode==='study',reverse=settings.mode==='reverse';
     const correct=reverse&&revealed&&C.isCorrect(target,p,settings),wrong=reverse&&revealed&&chosen&&C.key(chosen)===C.key(p)&&!correct;
@@ -64,6 +65,8 @@
   $$('#fret-options input').forEach(el=>el.checked=settings.frets.includes(Number(el.dataset.fret)));
   $('#open-strings').checked=settings.frets.includes(0);
   $('#natural-only').checked=settings.naturalOnly;
+  $('#show-tuning').checked=settings.showTuning;
+  $('.tuning').hidden=!settings.showTuning;
   $$('input[name=notation]').forEach(el=>el.checked=el.value===settings.notation);
   $('#notation-example').textContent='例：'+({both:'C♯ / D♭',sharp:'C♯',flat:'D♭'}[settings.notation]);
   $('#candidate-count').textContent=count+'か所';

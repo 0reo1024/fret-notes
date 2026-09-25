@@ -1,9 +1,9 @@
 (() => {
  'use strict';
- const C=window.FretCore,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+ const T=window.FretTheory,C=window.FretCore,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
  const STORAGE='fret-notes-settings-v1',dots=[3,5,7,9,12];
  let stored;try{stored=JSON.parse(localStorage.getItem(STORAGE)||'null');}catch{}
- let settings=C.normalize(stored),deck=[],index=0,round=1,revealed=false,chosen=null,cursor=null;
+ let settings={...C.normalize(stored),...T.normalize(stored)},deck=[],index=0,round=1,revealed=false,chosen=null,cursor=null;
  const current=()=>deck[index]||null;
  const allowed=p=>C.allowed(p,settings);
  const firstOnString=string=>C.candidates(settings).find(p=>p.string===string);
@@ -14,8 +14,41 @@
  function primary(){if(revealed)next();else reveal();}
  function answer(p){if(settings.mode!=='reverse'||!current())return;if(revealed){next();return;}if(!allowed(p))return;chosen=p;revealed=true;render();}
  function changeScope(){save();reset();}
- function noteHTML(p){const n=C.name(p,settings.notation).split(' / ');return n.length===1?n[0]:`${n[0]}<small>${n[1]}</small>`;}
+ function noteHTML(p,tone=null){if(tone){if(settings.toneLabels==='degree')return tone.degree;if(settings.toneLabels==='name')return tone.name;return `${tone.name}<small>${tone.degree}</small>`;}const n=C.name(p,settings.notation).split(' / ');return n.length===1?n[0]:`${n[0]}<small>${n[1]}</small>`;}
+ function buildStudyControls(){
+  $('#study-root').innerHTML=T.roots.map(note=>`<option value="${note}">${note}</option>`).join('');
+  $$('[data-study-view]').forEach(button=>button.addEventListener('click',()=>{settings.studyView=button.dataset.studyView;save();render();}));
+  $('#study-root').addEventListener('change',e=>{settings.studyRoot=e.target.value;save();render();});
+  $('#study-pattern').addEventListener('change',e=>{settings[settings.studyView==='chord'?'studyChord':'studyScale']=e.target.value;save();render();});
+  $('#tone-labels').addEventListener('change',e=>{settings.toneLabels=e.target.value;save();render();});
+ }
+ function renderStudy(){
+  const study=settings.mode==='study',pattern=T.selected(settings);
+  $('#study-tools').hidden=!study;
+  $('#theory-controls').hidden=!pattern;
+  $('#theory-summary').hidden=!pattern;
+  $$('[data-study-view]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.studyView===settings.studyView)));
+  if(!study||!pattern)return;
+  const isChord=settings.studyView==='chord';
+  const title=isChord?settings.studyRoot+pattern.suffix:settings.studyRoot+' '+pattern.label;
+  $('#question').textContent=title;
+  $('#question-kicker').textContent=isChord?'CHORD TONES':'SCALE MAP';
+  $('#question-help').textContent=`${isChord?pattern.label+'。':''}構成音の全位置を表示。${settings.highlightRange?'練習範囲外は暗く表示しています。':'範囲の色分けはOFFです。'}`;
+  $('#mode-label').textContent=isChord?'コードの構成音を確認する':'スケールの構成音を確認する';
+  $('#board-legend').textContent='R：ルート（黄緑）／ 構成音（青）';
+  $('#study-root').value=settings.studyRoot;
+  $('#tone-labels').value=settings.toneLabels;
+  $('#pattern-label').textContent=isChord?'コード':'スケール';
+  const catalog=isChord?T.chords:T.scales,groups=[...new Set(catalog.map(p=>p.group))];
+  $('#study-pattern').innerHTML=groups.map(group=>`<optgroup label="${group}">${catalog.filter(p=>p.group===group).map(p=>`<option value="${p.id}">${p.label}</option>`).join('')}</optgroup>`).join('');
+  $('#study-pattern').value=pattern.id;
+  $('#tone-list').innerHTML=T.tones(settings).map(t=>`<span class="tone-chip ${t.degree==='R'?'root-chip':''}"><span>${t.name}</span><small>${t.degree}</small></span>`).join('');
+  $('#pattern-description').textContent=pattern.description;
+  $('#pattern-description').hidden=!pattern.description;
+  $('#notation-example').textContent='コード・スケール表示では、ルートと度数に沿った表記を使います。';
+ }
  function buildControls(){
+  buildStudyControls();
   $('#string-options').innerHTML=[6,5,4,3,2,1].map(n=>`<label class="choice"><input type="checkbox" data-string="${n}" aria-label="${n}弦"><span>${n}</span></label>`).join('');
   $('#fret-options').innerHTML=Array.from({length:13},(_,n)=>`<label class="choice ${dots.includes(n)?'dot-fret':''}"><input type="checkbox" data-fret="${n}" aria-label="${n}フレット"><span>${n}</span></label>`).join('');
   $$('#string-options input').forEach(el=>el.addEventListener('change',()=>{settings.strings=$$('#string-options input:checked').map(x=>Number(x.dataset.string)).sort((a,b)=>a-b);changeScope();}));
@@ -32,7 +65,7 @@
   $('#primary').addEventListener('click',primary);
  }
  function renderBoard(){
-  const board=$('#board'),scroll=$('.board-shell').scrollLeft,focused=document.activeElement?.dataset?.position;const target=current();let html='<div></div>';
+  const board=$('#board'),scroll=$('.board-shell').scrollLeft,focused=document.activeElement?.dataset?.position;const target=current(),pattern=settings.mode==='study'?T.selected(settings):null,toneMap=new Map(T.tones(settings).map(t=>[t.pitch,t]));let html='<div></div>';
   for(let f=0;f<=12;f++)html+=`<div class="fret-label ${dots.includes(f)?'marked':''}">${f===0?'0 開放':f}</div>`;
   const openNames=['E','B','G','D','A','E'];
   for(let s=1;s<=6;s++){
@@ -41,15 +74,16 @@
     const p={string:s,fret:f},active=allowed(p),istarget=target&&C.key(target)===C.key(p),study=settings.mode==='study',reverse=settings.mode==='reverse';
     const correct=reverse&&revealed&&C.isCorrect(target,p,settings),wrong=reverse&&revealed&&chosen&&C.key(chosen)===C.key(p)&&!correct;
     const showTarget=!study&&!reverse&&istarget;
-    const showName=study||(showTarget&&revealed)||correct||wrong;
-    const noteClass=showTarget?'target'+(revealed?'':' blank'):correct?'correct':wrong?'wrong':'';
+    const tone=pattern?toneMap.get(C.pitch(p)):null;
+    const showName=(study&&(!pattern||!!tone))||(showTarget&&revealed)||correct||wrong;
+    const noteClass=tone?(tone.degree==='R'?'study-root':'study-tone'):showTarget?'target'+(revealed?'':' blank'):correct?'correct':wrong?'wrong':'';
     let label=`${s}弦 ${f}フレット`;
-    if(showName)label+=` ${C.name(p,settings.notation)}`;if(showTarget&&!revealed)label+=' 出題位置';
+    if(showName)label+=tone?` ${tone.name} 度数 ${tone.degree}`:` ${C.name(p,settings.notation)}`;if(showTarget&&!revealed)label+=' 出題位置';
     if(correct)label+=' 正解';if(wrong)label+=' 選択した位置';
     const inlay=dots.includes(f)&&((f!==12&&s===3)||(f===12&&(s===2||s===4)));
     const clickable=reverse&&!!target&&(revealed||active);
     if(reverse&&revealed)label+=' 次の問題へ';
-    html+=`<button type="button" class="cell ${f===0?'open':''} ${!active&&settings.highlightRange?'outside':''} ${inlay?'inlay':''}" style="--string-size:${.6+s*.37}px" data-position="${s}:${f}" aria-label="${label}" ${clickable?'':'aria-disabled="true"'} tabindex="${clickable&&cursor&&C.key(cursor)===C.key(p)?0:-1}">${showName||showTarget?`<span class="note ${noteClass}">${showName?noteHTML(p):'?'}</span>`:''}</button>`;
+    html+=`<button type="button" class="cell ${f===0?'open':''} ${!active&&settings.highlightRange?'outside':''} ${inlay?'inlay':''}" style="--string-size:${.6+s*.37}px" data-position="${s}:${f}" aria-label="${label}" ${clickable?'':'aria-disabled="true"'} tabindex="${clickable&&cursor&&C.key(cursor)===C.key(p)?0:-1}">${showName||showTarget?`<span class="note ${noteClass}">${showName?noteHTML(p,tone):'?'}</span>`:''}</button>`;
    }
   }
   html+='<div></div>';for(let f=0;f<=12;f++)html+=`<div class="dot-row">${dots.includes(f)?'<i></i>':''}${f===12?'<i></i>':''}</div>`;
@@ -97,6 +131,7 @@
   $('#primary').disabled=!target;
   $('#primary').innerHTML=revealed?'次の問題 <span aria-hidden="true">→</span>':'答えを表示 <span aria-hidden="true">↵</span>';
   $('.keyboard-hint').innerHTML=reverse?'<kbd>↑↓←→</kbd> 移動 <kbd>Enter</kbd> 回答 ／ <kbd>Space</kbd> 表示・次へ':'<kbd>Space</kbd> で表示・次へ';
+  renderStudy();
   renderBoard();
   if(target&&!study){const f=reverse?firstOnString(target.string).fret:target.fret;const el=$(`[data-position="${target.string}:${f}"]`);if(el&&!revealed&&!cursor){const shell=$('.board-shell');const left=el.offsetLeft-$('#board').offsetLeft;shell.scrollLeft=Math.max(0,left-shell.clientWidth/2+el.clientWidth/2);}}
  }

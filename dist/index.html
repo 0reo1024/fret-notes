@@ -5,7 +5,7 @@
 <meta name="description" content="指板上の音名を、自分のペースで。位置から音名、音名から位置、全音名の3つのモードで練習できます。">
 <title>Fret Notes — 指板トレーニング</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23131c21'/%3E%3Cpath d='M9 6v20M21 6v20M5 12h22M5 21h22' stroke='%23809299'/%3E%3Ccircle cx='15' cy='17' r='5' fill='%23d7f57a'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css"><script src="core.js" defer></script><script src="app.js" defer></script>
+<link rel="stylesheet" href="style.css"><script src="theory.js" defer></script><script src="core.js" defer></script><script src="app.js" defer></script>
 </head>
 <body>
 <div class="app">
@@ -17,6 +17,15 @@
  <section class="practice" aria-label="練習">
  <div class="session-line"><span id="mode-label">位置から音名を思い出す</span><span id="progress-label"></span></div><div class="progress-track"><div id="progress-fill"></div></div>
  <div class="question-area"><p id="question-kicker"></p><h2 id="question"></h2><p id="question-help"></p></div>
+ <section id="study-tools" class="study-tools" aria-label="コード・スケール表示" hidden>
+  <div class="study-tabs" aria-label="指板に表示する音"><button data-study-view="all" aria-pressed="true">全音名</button><button data-study-view="chord" aria-pressed="false">コードトーン</button><button data-study-view="scale" aria-pressed="false">スケール</button></div>
+  <div id="theory-controls" class="theory-controls" hidden>
+   <label>ルート<select id="study-root" aria-label="ルート音"></select></label>
+   <label class="pattern-picker"><span id="pattern-label">コード</span><select id="study-pattern" aria-labelledby="pattern-label"></select></label>
+   <label>指板の表示<select id="tone-labels"><option value="both">音名＋度数</option><option value="name">音名</option><option value="degree">度数</option></select></label>
+  </div>
+  <div id="theory-summary" aria-live="polite" aria-atomic="true" hidden><div id="tone-list" class="tone-list"></div><p id="pattern-description" class="pattern-description"></p><p class="theory-note">R＝ルート。構成音はルートと度数に沿って表記します（E♯・B♭♭など）。</p><p class="theory-note">指板は構成音の位置を示します。コードの押さえ方・運指の指定ではありません。</p></div>
+ </section>
  <div class="board-shell"><div id="board" class="board" aria-label="ギター指板 0〜12フレット"></div></div>
  <div class="board-caption"><span><i class="legend-dot"></i><span id="board-legend">出題位置</span></span><span>上：1弦 · 下：6弦 <span class="scroll-hint">／ 横にスクロールできます</span></span></div>
  <div id="answer-area" class="answer-area" aria-live="polite" aria-atomic="true"></div>

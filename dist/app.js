@@ -123,6 +123,7 @@
  function render(){
   const target=current(),study=settings.mode==='study',reverse=settings.mode==='reverse',count=deck.length;
   document.body.classList.toggle('study',study);
+  document.body.classList.toggle('answered',revealed&&!study);
   $$('.mode').forEach(el=>{const on=el.dataset.mode===settings.mode;el.classList.toggle('active',on);el.setAttribute('aria-pressed',String(on));});
   $$('#string-options input').forEach(el=>el.checked=settings.strings.includes(Number(el.dataset.string)));
   $$('#fret-options input').forEach(el=>el.checked=settings.frets.includes(Number(el.dataset.fret)));

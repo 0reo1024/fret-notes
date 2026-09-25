@@ -24,3 +24,56 @@
 @media(max-width:600px){.theory-controls:has(label:last-child[hidden]){grid-template-columns:85px minmax(0,1fr)}.theory-controls:has(label:last-child[hidden]) .pattern-picker{grid-column:2;grid-row:1}}
 .top-actions{display:flex;align-items:center;gap:9px}.install-app{border:1px solid #a6c464;border-radius:8px;background:#26392f;color:var(--accent);padding:10px 14px;font-size:14px;white-space:nowrap}.install-app:hover{background:#354d39}
 @media(max-width:600px){.top-actions{align-items:stretch;flex-direction:column;gap:5px}.install-app{font-size:12px;padding:7px}.top-actions .settings-toggle{max-width:none}}
+
+/* Keep the question, answer control, and board available on opening. */
+:root{--layer-0:#d7f57a;--layer-1:#87d7f9;--layer-2:#ffa8c5;--layer-3:#ffcb83}
+.header{height:68px}
+.header-tools{display:flex;align-items:center;gap:18px}
+.header .brand{font-size:21px}
+.header .brand-icon{width:31px;height:31px;font-size:25px}
+.modes{margin:14px 0 12px;gap:6px}
+.mode{padding:8px 14px;font-size:15px}
+.mode-num{margin-right:8px}
+.session-line{padding:9px 19px 8px;font-size:13px}
+.prompt-row{display:flex;align-items:center;gap:18px;min-height:88px;padding:13px 20px 12px}
+.prompt-row .question-area{flex:1;min-width:0;text-align:left;min-height:0;padding:0}
+.prompt-row #question-kicker{display:none}
+.prompt-row #question{font-size:22px;line-height:1.35;margin:0 0 2px}
+.prompt-row #question-help{font-size:13px;line-height:1.45}
+.prompt-row .actions{flex:none;display:flex;flex-direction:column;gap:5px;padding:0;align-items:center}
+.prompt-row .primary{min-width:178px;gap:15px;font-size:15px;padding:11px 16px}
+.prompt-row .keyboard-hint{font-size:11px}
+.practice .answer-area{display:none}
+.answered .answer-area{display:flex;min-height:0;padding:6px 16px 10px;border-top:1px solid var(--line)}
+.answered .answer-main{font-size:24px}
+.answered .answer-detail{margin-top:2px;font-size:13px}
+.board-shell{padding-top:3px;padding-bottom:7px}
+.board{grid-template-rows:22px repeat(6,44px) 17px}
+.board-caption{padding:0 20px 9px}
+.practice-footer{padding:11px 20px}
+.study-tools{margin:0 20px 10px}
+.study-tabs{margin-bottom:10px}
+.theory-controls{margin-bottom:9px}
+.comparison-layers{margin-bottom:7px}
+.add-layer{margin-bottom:10px}
+#theory-summary{margin:10px 20px 16px}
+@media(max-width:960px){.header-tools{gap:10px}.header .tuning{font-size:10px}.header .tuning span{font-size:11px}}
+@media(max-width:600px){
+ .header{height:64px}.header .brand{font-size:20px}.header .brand-icon{width:30px;height:30px}
+ .header-tools .tuning{display:none}.header-tools .settings-toggle{max-width:none;white-space:nowrap}
+ .header:has(.install-app:not([hidden])){height:auto;min-height:64px;flex-wrap:wrap;padding:9px 0;gap:5px}
+ .header:has(.install-app:not([hidden])) .header-tools{width:100%;justify-content:flex-end}
+ .modes{margin:10px 0;gap:4px}.mode{padding:8px 5px;font-size:13px}
+ .session-line{padding:8px 15px;font-size:12px}
+ .prompt-row{flex-direction:column;align-items:stretch;gap:10px;min-height:0;padding:13px 15px 12px}
+ .prompt-row #question{font-size:20px}.prompt-row #question-help{font-size:13px}
+ .prompt-row .actions{width:100%;gap:0;align-items:stretch}
+ .prompt-row .primary{width:100%;max-width:none;min-width:0;padding:10px 14px}
+ .prompt-row .keyboard-hint{display:none}
+ .board{grid-template-rows:22px repeat(6,44px) 17px}
+ .board-shell{padding:3px 10px 7px}
+ .board-caption{padding:0 14px 8px}
+ .study-tools{margin:0 14px 10px}
+ #theory-summary{margin:10px 14px 15px}
+}
+.study .prompt-row .actions{display:none}

@@ -190,4 +190,9 @@
   for(const tool of tools){const run=tool.execute;tool.execute=input=>{if(input===null||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length)throw new Error('Expected an empty object');return run();};try{Promise.resolve(context.registerTool(tool,{signal:lifecycle.signal})).catch(()=>{});}catch{}}
   window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});
  }
+ if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+ let installPrompt=null;
+ window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;$('#install-app').hidden=false;});
+ $('#install-app').addEventListener('click',async()=>{if(!installPrompt)return;const prompt=installPrompt;installPrompt=null;$('#install-app').hidden=true;await prompt.prompt();});
+ window.addEventListener('appinstalled',()=>{installPrompt=null;$('#install-app').hidden=true;});
 })();

@@ -3,15 +3,17 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="指板上の音名を、自分のペースで。位置から音名、音名から位置、全音名の3つのモードで練習できます。">
+<meta name="theme-color" content="#10171c">
 <title>Fret Notes — 指板トレーニング</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23131c21'/%3E%3Cpath d='M9 6v20M21 6v20M5 12h22M5 21h22' stroke='%23809299'/%3E%3Ccircle cx='15' cy='17' r='5' fill='%23d7f57a'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="style.css"><script src="theory.js" defer></script><script src="core.js" defer></script><script src="app.js" defer></script>
 </head>
 <body>
 <div class="app">
  <header class="header"><a class="brand" href="./"><span class="brand-icon" aria-hidden="true">♮</span>Fret Notes<span class="brand-jp">指板トレーニング</span></a><span class="tuning">STANDARD <span>E A D G B E</span></span></header>
  <main>
- <div class="topline"><div><p class="eyebrow">GUITAR PRACTICE</p><h1>指板を、自分のものに。</h1></div><button id="settings-toggle" class="settings-toggle" aria-expanded="false" aria-controls="settings">出題範囲・設定 <span aria-hidden="true">⚙</span></button></div>
+ <div class="topline"><div><p class="eyebrow">GUITAR PRACTICE</p><h1>指板を、自分のものに。</h1></div><div class="top-actions"><button id="install-app" class="install-app" type="button" hidden>PCにインストール</button><button id="settings-toggle" class="settings-toggle" aria-expanded="false" aria-controls="settings">出題範囲・設定 <span aria-hidden="true">⚙</span></button></div></div>
  <nav class="modes" aria-label="学習モード"><button data-mode="forward" class="mode active" aria-pressed="true"><span class="mode-num">01</span>位置 → 音名</button><button data-mode="reverse" class="mode" aria-pressed="false"><span class="mode-num">02</span>音名 → 位置</button><button data-mode="study" class="mode" aria-pressed="false"><span class="mode-num">03</span>全音名表示</button></nav>
  <div class="workspace">
  <section class="practice" aria-label="練習">

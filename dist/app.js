@@ -37,6 +37,14 @@
  }
  function buildStudyControls(){
   $('#show-shapes').addEventListener('click',()=>{renderShapes();$('#chord-shapes').showModal();});
+  const shapesDialog=$('#chord-shapes');
+  const onBackdrop=event=>{
+   const rect=shapesDialog.getBoundingClientRect();
+   return event.target===shapesDialog&&(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom);
+  };
+  let pressedBackdrop=false;
+  shapesDialog.addEventListener('pointerdown',event=>{pressedBackdrop=onBackdrop(event);});
+  shapesDialog.addEventListener('click',event=>{if(pressedBackdrop&&onBackdrop(event))shapesDialog.close();pressedBackdrop=false;});
   $('#study-root').innerHTML=T.roots.map(note=>`<option value="${note}">${note}</option>`).join('');
   $$('[data-study-view]').forEach(button=>button.addEventListener('click',()=>{settings.studyView=button.dataset.studyView;save();render();}));
   $('#study-root').addEventListener('change',e=>{settings.studyRoot=e.target.value;save();render();});

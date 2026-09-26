@@ -1,6 +1,6 @@
 {
-  "name": "Fret Notes — 指板トレーニング",
-  "short_name": "Fret Notes",
+  "name": "Fret Notes for Guitar",
+  "short_name": "Fret Notes Guitar",
   "description": "ギターの指板、コードトーン、スケールを練習するアプリ",
   "id": "./",
   "start_url": "./",
@@ -9,9 +9,22 @@
   "background_color": "#10171c",
   "theme_color": "#10171c",
   "lang": "ja",
-  "categories": ["education", "music"],
+  "categories": [
+    "education",
+    "music"
+  ],
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }

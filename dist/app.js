@@ -1,7 +1,10 @@
 (() => {
  'use strict';
- const T=window.FretTheory,C=window.FretCore,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
- const STORAGE='fret-notes-settings-v1',dots=[3,5,7,9,12];
+ const T=window.FretTheory,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+ const isBass=document.body.dataset.instrument==='bass',dots=[3,5,7,9,12];
+ let bassCount=4;try{bassCount=localStorage.getItem('fret-notes-bass-string-count')==='5'?5:4;}catch{}
+ let C=window.FretCore.forInstrument(isBass?'bass':'guitar',bassCount);
+ let STORAGE=isBass?`fret-notes-bass-${bassCount}-settings-v1`:'fret-notes-settings-v1';
  let stored;try{stored=JSON.parse(localStorage.getItem(STORAGE)||'null');}catch{}
  let settings={...C.normalize(stored),...T.normalize(stored)},deck=[],index=0,round=1,revealed=false,chosen=null,cursor=null;
  const current=()=>deck[index]||null;
@@ -18,12 +21,12 @@
  function options(catalog){const groups=[...new Set(catalog.map(p=>p.group))];return groups.map(group=>`<optgroup label="${group}">${catalog.filter(p=>p.group===group).map(p=>`<option value="${p.id}">${p.label}</option>`).join('')}</optgroup>`).join('');}
  function shapeDiagram(shape,chordName){
   const positions=shape.frets.map(f=>f===null?'×':f).join('・');
-  let svg=`<svg viewBox="0 0 230 228" role="img" aria-label="${chordName}、6弦から1弦のフレット：${positions}">`;
+  let svg=`<svg viewBox="0 0 230 228" role="img" aria-label="${chordName}、${C.stringCount}弦から1弦のフレット：${positions}">`;
   for(let f=0;f<=5;f++)svg+=`<line class="shape-fret" x1="40" x2="190" y1="${44+f*30}" y2="${44+f*30}" ${f===0&&shape.start===1?'style="stroke-width:4"':''}/>`;
   for(let f=0;f<5;f++)svg+=`<text class="shape-fret-number" x="19" y="${64+f*30}">${shape.start+f}</text>`;
   shape.frets.forEach((f,i)=>{
-   const x=40+i*30,tone=shape.notes[i];
-   svg+=`<line class="shape-string" x1="${x}" x2="${x}" y1="44" y2="194"/><text class="shape-string-number" x="${x}" y="216">${6-i}</text>`;
+   const x=40+i*150/(C.stringCount-1),tone=shape.notes[i];
+   svg+=`<line class="shape-string" x1="${x}" x2="${x}" y1="44" y2="194"/><text class="shape-string-number" x="${x}" y="216">${C.stringCount-i}</text>`;
    if(f===null||f===0)svg+=`<text class="shape-open" x="${x}" y="29">${f===null?'×':'○'}</text>`;
    else {const y=59+(f-shape.start)*30;svg+=`<circle class="${tone.degree==='R'?'shape-root':'shape-tone'}" cx="${x}" cy="${y}" r="12.5"/><text class="shape-degree" x="${x}" y="${y}" dominant-baseline="central">${tone.degree}</text>`;}
   });
@@ -31,8 +34,8 @@
  }
  function renderShapes(){
   $('#shapes-content').innerHTML=T.layers(settings).filter(layer=>layer.kind==='chord').map(layer=>{
-   const name=layer.root+layer.pattern.suffix,shapes=window.FretShapes.get(layer.root,layer.pattern.id);
-   return `<section class="shape-group layer-${layer.index}"><h3><span class="layer-tag">${layer.index+1}</span>${name}<small>${layer.pattern.label}</small></h3><div class="shape-cards">${shapes.map(shape=>`<figure class="shape-card"><figcaption>${shape.label}</figcaption>${shapeDiagram(shape,name)}<p aria-label="6弦から1弦のフレット">${shape.frets.map(f=>f===null?'×':f).join(' · ')}</p></figure>`).join('')}</div></section>`;
+   const name=layer.root+layer.pattern.suffix,shapes=window.FretShapes.get(layer.root,layer.pattern.id,C.instrument,C.stringCount);
+   return `<section class="shape-group layer-${layer.index}"><h3><span class="layer-tag">${layer.index+1}</span>${name}<small>${layer.pattern.label}</small></h3><div class="shape-cards">${shapes.map(shape=>`<figure class="shape-card"><figcaption>${shape.label}</figcaption><p class="shape-omissions">${shape.omitted.length?shape.omitted.map(d=>d+'度').join('・')+'省略':'構成音をすべて含む'}</p>${shapeDiagram(shape,name)}<p aria-label="${C.stringCount}弦から1弦のフレット">${shape.frets.map(f=>f===null?'×':f).join(' · ')}</p></figure>`).join('')}</div></section>`;
   }).join('');
  }
  function buildStudyControls(){
@@ -105,13 +108,38 @@
   $('#pattern-description').hidden=multiple||!pattern.description;
   $('#notation-example').textContent='コード・スケール表示では、ルートと度数に沿った表記を使います。';
  }
+ function updateInstrument(){
+  document.body.style.setProperty('--string-count',C.stringCount);
+  $('#bass-string-count').value=String(C.stringCount);
+  $('.tuning').innerHTML=`STANDARD <span>${C.openNames.slice().reverse().join(' ')}</span>`;
+  $('#board').setAttribute('aria-label',`${isBass?'ベース':'ギター'}指板 ${C.stringCount}弦 0〜12フレット`);
+  $('#string-direction').textContent=`上：1弦 · 下：${C.stringCount}弦`;
+  $('#shapes-guide').textContent=`左から${C.stringCount}弦→1弦。○＝開放弦、×＝弾かない弦。丸の中は度数（R＝ルート）です。`;
+ }
+ function buildStringControls(){
+  const strings=Array.from({length:C.stringCount},(_,i)=>C.stringCount-i);
+  $('#string-options').innerHTML=strings.map(n=>`<label class="choice"><input type="checkbox" data-string="${n}" aria-label="${n}弦"><span>${n}</span></label>`).join('');
+  const pairs=isBass?[[C.stringCount,C.stringCount-1],[2,1]]:[[6,5],[4,3],[2,1]];
+  $('#string-presets').innerHTML=`<button data-strings="${strings.join(',')}">全弦</button>`+pairs.map(pair=>`<button data-strings="${pair.join(',')}">${pair.join('・')}弦</button>`).join('');
+  $$('#string-options input').forEach(el=>el.addEventListener('change',()=>{settings.strings=$$('#string-options input:checked').map(x=>Number(x.dataset.string)).sort((a,b)=>a-b);changeScope();}));
+  $$('#string-presets button').forEach(el=>el.addEventListener('click',()=>{settings.strings=el.dataset.strings.split(',').map(Number);changeScope();}));
+ }
  function buildControls(){
   buildStudyControls();
-  $('#string-options').innerHTML=[6,5,4,3,2,1].map(n=>`<label class="choice"><input type="checkbox" data-string="${n}" aria-label="${n}弦"><span>${n}</span></label>`).join('');
+  updateInstrument();
+  $('#bass-string-count').addEventListener('change',e=>{
+   if(!isBass)return;
+   const fallback={...settings,strings:settings.strings.length===C.stringCount?undefined:settings.strings};
+   save();bassCount=Number(e.target.value)===5?5:4;
+   try{localStorage.setItem('fret-notes-bass-string-count',String(bassCount));}catch{}
+   C=window.FretCore.forInstrument('bass',bassCount);STORAGE=`fret-notes-bass-${bassCount}-settings-v1`;
+   let saved;try{saved=JSON.parse(localStorage.getItem(STORAGE)||'null');}catch{}
+   settings={...C.normalize(saved||fallback),...T.normalize(saved||fallback)};
+   buildStringControls();updateInstrument();reset();
+  });
+  buildStringControls();
   $('#fret-options').innerHTML=Array.from({length:13},(_,n)=>`<label class="choice ${dots.includes(n)?'dot-fret':''}"><input type="checkbox" data-fret="${n}" aria-label="${n}フレット"><span>${n}</span></label>`).join('');
-  $$('#string-options input').forEach(el=>el.addEventListener('change',()=>{settings.strings=$$('#string-options input:checked').map(x=>Number(x.dataset.string)).sort((a,b)=>a-b);changeScope();}));
   $$('#fret-options input').forEach(el=>el.addEventListener('change',()=>{settings.frets=$$('#fret-options input:checked').map(x=>Number(x.dataset.fret));changeScope();}));
-  $$('#string-presets button').forEach(el=>el.addEventListener('click',()=>{settings.strings=el.dataset.strings.split(',').map(Number);changeScope();}));
   $$('#fret-presets button').forEach(el=>el.addEventListener('click',()=>{const sets={all:Array.from({length:13},(_,i)=>i),dots:[3,5,7,9,12],low:[0,1,2,3,4,5],mid:[5,6,7,8,9],high:[9,10,11,12]};settings.frets=sets[el.dataset.frets].slice();changeScope();}));
   $('#highlight-range').addEventListener('change',e=>{settings.highlightRange=e.target.checked;save();render();});
   $('#show-tuning').addEventListener('change',e=>{settings.showTuning=e.target.checked;save();render();});
@@ -125,8 +153,8 @@
  function renderBoard(){
   const board=$('#board'),scroll=$('.board-shell').scrollLeft,focused=document.activeElement?.dataset?.position;const target=current(),pattern=settings.mode==='study'?T.selected(settings):null,layers=pattern?T.layers(settings):[],multiple=layers.length>1,toneMap=new Map(T.tones(settings).map(t=>[t.pitch,t]));let html='<div></div>';
   for(let f=0;f<=12;f++)html+=`<div class="fret-label ${dots.includes(f)?'marked':''}">${f===0?'0 開放':f}</div>`;
-  const openNames=['E','B','G','D','A','E'];
-  for(let s=1;s<=6;s++){
+  const openNames=C.openNames;
+  for(let s=1;s<=C.stringCount;s++){
    html+=`<div class="string-label">${s}${settings.showTuning?`<strong>${openNames[s-1]}</strong>`:''}</div>`;
    for(let f=0;f<=12;f++){
     const p={string:s,fret:f},active=allowed(p),istarget=target&&C.key(target)===C.key(p),study=settings.mode==='study',reverse=settings.mode==='reverse';
@@ -139,7 +167,8 @@
     let label=`${s}弦 ${f}フレット`;
     if(showName)label+=matches.length?` ${matches.map(x=>`${x.index+1}: ${x.tone.name} ${x.tone.degree}`).join('、')}`:tone?` ${tone.name} 度数 ${tone.degree}`:` ${C.name(p,settings.notation)}`;if(showTarget&&!revealed)label+=' 出題位置';
     if(correct)label+=' 正解';if(wrong)label+=' 選択した位置';
-    const inlay=dots.includes(f)&&((f!==12&&s===3)||(f===12&&(s===2||s===4)));
+    const doubleDots=C.stringCount===4?[1,3]:C.stringCount===5?[2,3]:[2,4];
+    const inlay=dots.includes(f)&&((f!==12&&s===Math.floor(C.stringCount/2))||(f===12&&doubleDots.includes(s)));
     const clickable=reverse&&!!target&&(revealed||active);
     if(reverse&&revealed)label+=' 次の問題へ';
     const display=multiple&&matches.length?`<span class="combined-name">${tone.name}</span><span class="layer-marks">${matches.map(x=>`<i class="layer-mark layer-${x.index}" aria-hidden="true"></i>`).join('')}</span>`:noteHTML(p,tone);
@@ -169,7 +198,7 @@
   $$('input[name=notation]').forEach(el=>el.checked=el.value===settings.notation);
   $('#notation-example').textContent='例：'+({both:'C♯ / D♭',sharp:'C♯',flat:'D♭'}[settings.notation]);
   $('#candidate-count').textContent=count+'か所';
-  const stringText=settings.strings.length===6?'全弦':settings.strings.slice().sort((a,b)=>b-a).join('・')+'弦';
+  const stringText=settings.strings.length===C.stringCount?'全弦':settings.strings.slice().sort((a,b)=>b-a).join('・')+'弦';
   const fretText=settings.frets.length===13?'0〜12F':settings.frets.join('・')+'F';
   $('#scope-summary').textContent=count?`${stringText} ／ ${fretText}${settings.naturalOnly?' ／ ナチュラル音のみ':''} ／ ${count}か所`:'出題対象なし：範囲や音名の条件を変更してください';
   $('#mode-label').textContent=study?'音名のつながりを確認する':reverse?'音名から位置を見つける':'位置から音名を思い出す';
@@ -215,7 +244,7 @@
  // Optional browser tool support; the regular interface remains fully independent.
  const context=document.modelContext;
  if(context?.registerTool){const lifecycle=new AbortController();
-  const state=()=>({mode:settings.mode,settings:{...settings},position:settings.mode==='forward'?current():undefined,question:$('#question').textContent,revealed,answer:revealed?$('#answer-area').textContent:null,progress:countProgress()});
+  const state=()=>({instrument:C.instrument,stringCount:C.stringCount,mode:settings.mode,settings:{...settings},position:settings.mode==='forward'?current():undefined,question:$('#question').textContent,revealed,answer:revealed?$('#answer-area').textContent:null,progress:countProgress()});
   function countProgress(){return {round,index:deck.length?index+1:0,total:deck.length};}
   const tools=[
    {name:'read_practice_state',description:'Read the current guitar exercise, selected practice range, and visible answer.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute:()=>state()},

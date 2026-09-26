@@ -1,0 +1,30 @@
+{
+  "name": "Fret Notes for Bass",
+  "short_name": "Fret Notes Bass",
+  "description": "4弦・5弦ベースの指板、コードトーン、スケールを練習するアプリ",
+  "id": "./bass.html",
+  "start_url": "./bass.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#10171c",
+  "theme_color": "#10171c",
+  "lang": "ja",
+  "categories": [
+    "education",
+    "music"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

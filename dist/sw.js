@@ -1,5 +1,5 @@
-const CACHE = 'fret-notes-offline-v2';
-const SHELL = ['./', './index.html', './style.css', './core.js', './theory.js', './shapes.js', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+const CACHE = 'fret-notes-offline-v3';
+const SHELL = ['./', './index.html', './bass.html', './bass.webmanifest', './style.css', './core.js', './theory.js', './shapes.js', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -22,7 +22,7 @@ self.addEventListener('fetch', event => {
       if (response.ok && response.type === 'basic') await cache.put(request, response.clone());
       return response;
     } catch {
-      return (await cache.match(request, { ignoreSearch: true })) || (request.mode === 'navigate' ? await cache.match('./index.html') : Response.error());
+      return (await cache.match(request, { ignoreSearch: true })) || (request.mode === 'navigate' ? await cache.match(new URL(request.url).pathname.endsWith('/bass.html')?'./bass.html':'./index.html') : Response.error());
     }
   })());
 });

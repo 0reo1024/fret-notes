@@ -7,7 +7,7 @@
 <title>Fret Notes — 指板トレーニング</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23131c21'/%3E%3Cpath d='M9 6v20M21 6v20M5 12h22M5 21h22' stroke='%23809299'/%3E%3Ccircle cx='15' cy='17' r='5' fill='%23d7f57a'/%3E%3C/svg%3E">
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css"><script src="theory.js" defer></script><script src="core.js" defer></script><script src="app.js" defer></script>
+<link rel="stylesheet" href="style.css"><script src="theory.js" defer></script><script src="core.js" defer></script><script src="shapes.js" defer></script><script src="app.js" defer></script>
 </head>
 <body>
 <div class="app">
@@ -27,7 +27,9 @@
   </div>
   <div id="comparison-layers" class="comparison-layers" hidden></div>
   <button id="add-layer" class="add-layer" type="button" hidden>＋ 比較対象を追加</button>
+  <button id="show-shapes" class="show-shapes" type="button" aria-haspopup="dialog" hidden>コードシェイプを見る</button>
  </section>
+ <div id="comparison-legend" class="comparison-legend" aria-label="比較対象の色" hidden></div>
  <div class="board-shell"><div id="board" class="board" aria-label="ギター指板 0〜12フレット"></div></div>
  <div class="board-caption"><span><i class="legend-dot"></i><span id="board-legend">出題位置</span></span><span>上：1弦 · 下：6弦 <span class="scroll-hint">／ 横にスクロールできます</span></span></div>
  <div id="theory-summary" aria-live="polite" aria-atomic="true" hidden><div id="tone-list" class="tone-list"></div><p id="pattern-description" class="pattern-description"></p><p class="theory-note">R＝ルート。構成音はルートと度数に沿って表記します（E♯・B♭♭など）。</p><p class="theory-note">指板は構成音の位置を示します。コードの押さえ方・運指の指定ではありません。</p></div>
@@ -45,5 +47,11 @@
  </div>
  <footer class="page-footer"><span>FRET NOTES</span><p>急がず、ひとつずつ。音名と位置をつなげよう。</p></footer>
  </main>
+ <dialog id="chord-shapes" aria-labelledby="shapes-title">
+  <header class="shapes-header"><h2 id="shapes-title">コードシェイプ</h2><form method="dialog"><button class="close-shapes" aria-label="コードシェイプを閉じる">閉じる ×</button></form></header>
+  <p class="shapes-help">左から6弦→1弦。○＝開放弦、×＝弾かない弦。丸の中は度数（R＝ルート）です。</p>
+  <p class="shapes-help">押さえ方の例です。形に応じてセーハを使います。指番号は指定せず、練習範囲に関係なく表示します。</p>
+  <div id="shapes-content"></div>
+ </dialog>
 </div>
 </body></html>

@@ -16,7 +16,27 @@
  function changeScope(){save();reset();}
  function noteHTML(p,tone=null){if(tone){if(settings.toneLabels==='degree')return tone.degree;if(settings.toneLabels==='name')return tone.name;return `${tone.name}<small>${tone.degree}</small>`;}const n=C.name(p,settings.notation).split(' / ');return n.length===1?n[0]:`${n[0]}<small>${n[1]}</small>`;}
  function options(catalog){const groups=[...new Set(catalog.map(p=>p.group))];return groups.map(group=>`<optgroup label="${group}">${catalog.filter(p=>p.group===group).map(p=>`<option value="${p.id}">${p.label}</option>`).join('')}</optgroup>`).join('');}
+ function shapeDiagram(shape,chordName){
+  const positions=shape.frets.map(f=>f===null?'×':f).join('・');
+  let svg=`<svg viewBox="0 0 230 228" role="img" aria-label="${chordName}、6弦から1弦のフレット：${positions}">`;
+  for(let f=0;f<=5;f++)svg+=`<line class="shape-fret" x1="40" x2="190" y1="${44+f*30}" y2="${44+f*30}" ${f===0&&shape.start===1?'style="stroke-width:4"':''}/>`;
+  for(let f=0;f<5;f++)svg+=`<text class="shape-fret-number" x="19" y="${64+f*30}">${shape.start+f}</text>`;
+  shape.frets.forEach((f,i)=>{
+   const x=40+i*30,tone=shape.notes[i];
+   svg+=`<line class="shape-string" x1="${x}" x2="${x}" y1="44" y2="194"/><text class="shape-string-number" x="${x}" y="216">${6-i}</text>`;
+   if(f===null||f===0)svg+=`<text class="shape-open" x="${x}" y="29">${f===null?'×':'○'}</text>`;
+   else {const y=59+(f-shape.start)*30;svg+=`<circle class="${tone.degree==='R'?'shape-root':'shape-tone'}" cx="${x}" cy="${y}" r="12.5"/><text class="shape-degree" x="${x}" y="${y}" dominant-baseline="central">${tone.degree}</text>`;}
+  });
+  return svg+'</svg>';
+ }
+ function renderShapes(){
+  $('#shapes-content').innerHTML=T.layers(settings).filter(layer=>layer.kind==='chord').map(layer=>{
+   const name=layer.root+layer.pattern.suffix,shapes=window.FretShapes.get(layer.root,layer.pattern.id);
+   return `<section class="shape-group layer-${layer.index}"><h3><span class="layer-tag">${layer.index+1}</span>${name}<small>${layer.pattern.label}</small></h3><div class="shape-cards">${shapes.map(shape=>`<figure class="shape-card"><figcaption>${shape.label}</figcaption>${shapeDiagram(shape,name)}<p aria-label="6弦から1弦のフレット">${shape.frets.map(f=>f===null?'×':f).join(' · ')}</p></figure>`).join('')}</div></section>`;
+  }).join('');
+ }
  function buildStudyControls(){
+  $('#show-shapes').addEventListener('click',()=>{renderShapes();$('#chord-shapes').showModal();});
   $('#study-root').innerHTML=T.roots.map(note=>`<option value="${note}">${note}</option>`).join('');
   $$('[data-study-view]').forEach(button=>button.addEventListener('click',()=>{settings.studyView=button.dataset.studyView;save();render();}));
   $('#study-root').addEventListener('change',e=>{settings.studyRoot=e.target.value;save();render();});
@@ -40,9 +60,14 @@
  }
  function renderStudy(){
   const study=settings.mode==='study',pattern=T.selected(settings),layers=T.layers(settings),multiple=layers.length>1;
+  document.body.classList.toggle('comparing',study&&multiple);
+  $('#show-shapes').hidden=!study||settings.studyView!=='chord';
+  $('#comparison-legend').hidden=!study||!multiple;
+  $('#comparison-legend').innerHTML=study&&multiple?layers.map(layer=>`<span class="layer-legend layer-${layer.index}"><span class="layer-tag">${layer.index+1}</span>${layer.root} ${layer.pattern.label}</span>`).join(''):'';
+  if($('#chord-shapes').open){if(study&&settings.studyView==='chord')renderShapes();else $('#chord-shapes').close();}
   $('#study-tools').hidden=!study;
   $('#theory-controls').hidden=!pattern;
-  $('#theory-summary').hidden=!pattern;
+  $('#theory-summary').hidden=!study||!pattern;
   $('#comparison-layers').hidden=!pattern||!settings.studyLayers.length;
   $('#add-layer').hidden=!pattern;
   $$('[data-study-view]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.studyView===settings.studyView)));
@@ -153,7 +178,7 @@
   else{
    const matches=C.candidates(settings).filter(p=>C.isCorrect(target,p,settings)).map(p=>`${p.fret}F`).join('・');
    const correct=chosen&&C.isCorrect(target,chosen,settings);
-   const title=reverse?(chosen?(correct?'正解！':'正解を確認しよう'):'正解の位置'):C.name(target,settings.notation);
+   const title=reverse?(chosen?(correct?'正解！':'正解はこちら'):'正解の位置'):C.name(target,settings.notation);
    const detail=reverse?`${target.string}弦 ${matches}：${C.name(target,settings.notation)}${chosen&&!correct?` ／ 選んだ位置は ${chosen.string}弦 ${chosen.fret}F（${C.name(chosen,settings.notation)}）`:''}`:`${target.string}弦 · ${target.fret}フレット${target.fret===0?'（開放弦）':''}`;
    answerArea.innerHTML=`<span class="answer-main">${title}</span><span class="answer-detail">${detail}</span>`;
   }

@@ -1,5 +1,5 @@
-const CACHE = 'fret-notes-offline-v1';
-const SHELL = ['./', './index.html', './style.css', './core.js', './theory.js', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+const CACHE = 'fret-notes-offline-v2';
+const SHELL = ['./', './index.html', './style.css', './core.js', './theory.js', './shapes.js', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));

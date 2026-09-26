@@ -144,7 +144,7 @@
   $('#progress-fill').style.width=study?'100%':count?`${(index+1)/count*100}%`:'0%';
   $('#question-kicker').textContent=study?'FRETBOARD MAP':reverse?'FIND THE NOTE':'NAME THE NOTE';
   $('#question').textContent=study?'音名を、見渡そう。':!target?'練習する範囲を選ぼう。':reverse?`${target.string}弦の ${C.name(target,settings.notation)} はどこ？`:'この位置の音名は？';
-  $('#question-help').textContent=study?(settings.highlightRange?'選択中の範囲を明るく表示しています。':'すべての位置の音名を同じ明るさで表示しています。'):!target?'弦・フレットを選ぶか、ナチュラル音の条件を変更してください。':reverse?(revealed?(chosen&&C.isCorrect(target,chosen,settings)?'正解！ 指板をタップして次へ。':'黄緑の位置が正解。指板をタップして次へ。'):'指板をタップして回答。押弦後は「答えを表示」。'):'頭の中で思い浮かべてから、答えを表示。';
+  $('#question-help').textContent=study?(settings.highlightRange?'選択中の範囲を明るく表示しています。':'すべての位置の音名を同じ明るさで表示しています。'):!target?'弦・フレットを選ぶか、ナチュラル音の条件を変更してください。':reverse?(revealed?(chosen&&C.isCorrect(target,chosen,settings)?'正解！ 指板をタップして次へ。':'黄緑の位置が正解。指板をタップして次へ。'):'指板をタップして回答。押弦後は「答えを表示」。'):(revealed?`正解：${C.name(target,settings.notation)}`:'頭の中で思い浮かべてから、答えを表示。');
   $('#board-legend').textContent=study?(settings.highlightRange?'選択中の範囲':'全音名'):reverse?(revealed?'正解位置':'指板を選択'):'出題位置';
   $('#shuffle-label').textContent=study?'標準チューニング / 0〜12F':'一巡するまで、重複なし';
   const answerArea=$('#answer-area');
@@ -157,7 +157,6 @@
    const detail=reverse?`${target.string}弦 ${matches}：${C.name(target,settings.notation)}${chosen&&!correct?` ／ 選んだ位置は ${chosen.string}弦 ${chosen.fret}F（${C.name(chosen,settings.notation)}）`:''}`:`${target.string}弦 · ${target.fret}フレット${target.fret===0?'（開放弦）':''}`;
    answerArea.innerHTML=`<span class="answer-main">${title}</span><span class="answer-detail">${detail}</span>`;
   }
-  $('#reverse-answer').innerHTML=reverse&&revealed?answerArea.innerHTML:'';
   $('#primary').disabled=!target;
   $('#primary').innerHTML=revealed?'次の問題 <span aria-hidden="true">→</span>':reverse?'押弦後に答えを表示 <span aria-hidden="true">↵</span>':'答えを表示 <span aria-hidden="true">↵</span>';
   $('.keyboard-hint').innerHTML=reverse?'<kbd>↑↓←→</kbd> 移動 <kbd>Enter</kbd> 回答 ／ <kbd>Space</kbd> 表示・次へ':'<kbd>Space</kbd> で表示・次へ';

@@ -77,5 +77,9 @@
  #theory-summary{margin:10px 14px 15px}
 }
 .study .prompt-row .actions{display:none}
-/* Keep the reverse exercise's board fixed while feedback changes. */
-.practice .prompt-row #question-help{min-height:3em}
+/* Reserve the answer's space above the board in both quiz modes. */
+.feedback-slot{height:74px;display:flex;align-items:center}
+.study .feedback-slot{height:auto}
+.answered .feedback-slot #question-help{display:none}
+.answered .feedback-slot .answer-area{width:100%;height:100%;min-height:0;padding:0;border:0;align-items:flex-start;justify-content:center;text-align:left;overflow-y:auto}
+@media(max-width:600px){.feedback-slot{height:92px}}

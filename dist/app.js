@@ -159,7 +159,7 @@
   }
   $('#reverse-answer').innerHTML=reverse&&revealed?answerArea.innerHTML:'';
   $('#primary').disabled=!target;
-  $('#primary').innerHTML=revealed?'次の問題 <span aria-hidden="true">→</span>':'答えを表示 <span aria-hidden="true">↵</span>';
+  $('#primary').innerHTML=revealed?'次の問題 <span aria-hidden="true">→</span>':reverse?'押弦後に答えを表示 <span aria-hidden="true">↵</span>':'答えを表示 <span aria-hidden="true">↵</span>';
   $('.keyboard-hint').innerHTML=reverse?'<kbd>↑↓←→</kbd> 移動 <kbd>Enter</kbd> 回答 ／ <kbd>Space</kbd> 表示・次へ':'<kbd>Space</kbd> で表示・次へ';
   renderStudy();
   renderBoard();

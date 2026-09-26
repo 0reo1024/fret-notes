@@ -13,7 +13,7 @@
 <div class="app">
  <header class="header"><a class="brand" href="bass.html"><span class="brand-icon" aria-hidden="true">♮</span><span class="brand-name">Fret Notes <small>for Bass</small></span></a><div class="header-tools"><span class="tuning">STANDARD <span>E A D G B E</span></span><button id="install-app" class="install-app" type="button" hidden>PCにインストール</button><button id="settings-toggle" class="settings-toggle" aria-expanded="false" aria-controls="settings">出題範囲・設定 <span aria-hidden="true">⚙</span></button></div></header>
  <main>
- <div class="instrument-bar"><nav aria-label="楽器"><a href="./">Guitar</a><a href="bass.html" aria-current="page">Bass</a></nav><label class="bass-selector">弦数 <select id="bass-string-count"><option value="4">4弦ベース</option><option value="5">5弦ベース（Low B）</option></select></label></div>
+ <div class="instrument-bar"><nav aria-label="楽器"><button type="button" data-instrument-switch="guitar" aria-pressed="false">Guitar</button><button type="button" data-instrument-switch="bass" aria-pressed="true">Bass</button></nav><label class="bass-selector">弦数 <select id="bass-string-count"><option value="4">4弦ベース</option><option value="5">5弦ベース（Low B）</option></select></label></div>
  <nav class="modes" aria-label="学習モード"><button data-mode="forward" class="mode active" aria-pressed="true"><span class="mode-num">01</span>位置 → 音名</button><button data-mode="reverse" class="mode" aria-pressed="false"><span class="mode-num">02</span>音名 → 位置</button><button data-mode="study" class="mode" aria-pressed="false"><span class="mode-num">03</span>全音名表示</button></nav>
  <div class="workspace">
  <section class="practice" aria-label="練習">

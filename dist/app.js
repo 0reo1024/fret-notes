@@ -1,7 +1,8 @@
 (() => {
  'use strict';
  const T=window.FretTheory,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
- const isBass=document.body.dataset.instrument==='bass',dots=[3,5,7,9,12];
+ const dots=[3,5,7,9,12];
+ let isBass=location.hash==='#bass'||(location.hash!=='#guitar'&&document.body.dataset.instrument==='bass');
  let bassCount=4;try{bassCount=localStorage.getItem('fret-notes-bass-string-count')==='5'?5:4;}catch{}
  let C=window.FretCore.forInstrument(isBass?'bass':'guitar',bassCount);
  let STORAGE=isBass?`fret-notes-bass-${bassCount}-settings-v1`:'fret-notes-settings-v1';
@@ -108,7 +109,28 @@
   $('#pattern-description').hidden=multiple||!pattern.description;
   $('#notation-example').textContent='コード・スケール表示では、ルートと度数に沿った表記を使います。';
  }
+ function switchInstrument(kind,count=bassCount){
+  const nextBass=kind==='bass',nextCount=Number(count)===5?5:4;
+  if(isBass===nextBass&&(!nextBass||C.stringCount===nextCount))return;
+  const fallback={...settings,strings:isBass!==nextBass||settings.strings.length===C.stringCount?undefined:settings.strings};
+  save();isBass=nextBass;bassCount=nextCount;
+  try{localStorage.setItem('fret-notes-bass-string-count',String(bassCount));}catch{}
+  C=window.FretCore.forInstrument(isBass?'bass':'guitar',bassCount);
+  STORAGE=isBass?`fret-notes-bass-${bassCount}-settings-v1`:'fret-notes-settings-v1';
+  let saved;try{saved=JSON.parse(localStorage.getItem(STORAGE)||'null');}catch{}
+  settings={...C.normalize(saved||fallback),...T.normalize(saved||fallback)};
+  buildStringControls();updateInstrument();reset();
+  history.replaceState(null,'','#'+C.instrument);
+ }
  function updateInstrument(){
+  document.body.dataset.instrument=C.instrument;
+  document.title=`Fret Notes for ${isBass?'Bass':'Guitar'}`;
+  $('.brand-name small').textContent=`for ${isBass?'Bass':'Guitar'}`;
+  $('.page-footer>span').textContent=`FRET NOTES FOR ${isBass?'BASS':'GUITAR'}`;
+  $('.bass-selector').hidden=!isBass;
+  $$('[data-instrument-switch]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.instrumentSwitch===C.instrument)));
+  $('link[rel=manifest]').setAttribute('href',isBass?'bass.webmanifest':'manifest.webmanifest');
+  $('.brand').setAttribute('href','#'+C.instrument);
   document.body.style.setProperty('--string-count',C.stringCount);
   $('#bass-string-count').value=String(C.stringCount);
   $('.tuning').innerHTML=`STANDARD <span>${C.openNames.slice().reverse().join(' ')}</span>`;
@@ -127,16 +149,8 @@
  function buildControls(){
   buildStudyControls();
   updateInstrument();
-  $('#bass-string-count').addEventListener('change',e=>{
-   if(!isBass)return;
-   const fallback={...settings,strings:settings.strings.length===C.stringCount?undefined:settings.strings};
-   save();bassCount=Number(e.target.value)===5?5:4;
-   try{localStorage.setItem('fret-notes-bass-string-count',String(bassCount));}catch{}
-   C=window.FretCore.forInstrument('bass',bassCount);STORAGE=`fret-notes-bass-${bassCount}-settings-v1`;
-   let saved;try{saved=JSON.parse(localStorage.getItem(STORAGE)||'null');}catch{}
-   settings={...C.normalize(saved||fallback),...T.normalize(saved||fallback)};
-   buildStringControls();updateInstrument();reset();
-  });
+  $$('[data-instrument-switch]').forEach(button=>button.addEventListener('click',()=>switchInstrument(button.dataset.instrumentSwitch)));
+  $('#bass-string-count').addEventListener('change',e=>{if(isBass)switchInstrument('bass',e.target.value);});
   buildStringControls();
   $('#fret-options').innerHTML=Array.from({length:13},(_,n)=>`<label class="choice ${dots.includes(n)?'dot-fret':''}"><input type="checkbox" data-fret="${n}" aria-label="${n}フレット"><span>${n}</span></label>`).join('');
   $$('#fret-options input').forEach(el=>el.addEventListener('change',()=>{settings.frets=$$('#fret-options input:checked').map(x=>Number(x.dataset.fret));changeScope();}));
@@ -228,7 +242,7 @@
  }
  document.addEventListener('keydown',e=>{
   if(e.repeat)return;
-  const el=e.target;if(el.closest('#settings,.modes,#settings-toggle')||el.matches('input,select,textarea,[contenteditable=true]'))return;
+  const el=e.target;if(el.closest('#settings,.modes,.instrument-bar,#settings-toggle')||el.matches('input,select,textarea,[contenteditable=true]'))return;
   if(settings.mode==='study'||!current())return;
   if(e.code==='Space'){e.preventDefault();primary();return;}
   if(settings.mode!=='reverse'||revealed)return;

@@ -145,10 +145,10 @@ body:not(.study) .feedback-slot{grid-column:1/-1;grid-row:2;height:96px;justify-
 .brand-name small{font-size:13px;letter-spacing:.03em;font-weight:500;color:var(--muted);margin-top:4px}
 .instrument-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;min-height:38px}
 .instrument-bar nav{display:flex;gap:5px}
-.instrument-bar a{display:inline-block;color:var(--muted);text-decoration:none;font-size:14px;padding:5px 12px;border-radius:6px;border:1px solid transparent}
-.instrument-bar a[aria-current=page]{color:var(--accent);border-color:#657945;background:#273525}
+.instrument-bar button{display:inline-block;background:transparent;font-family:inherit;color:var(--muted);text-decoration:none;font-size:14px;padding:5px 12px;border-radius:6px;border:1px solid transparent}
+.instrument-bar button[aria-pressed=true]{color:var(--accent);border-color:#657945;background:#273525}
 .bass-selector{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
 .bass-selector select{font:14px system-ui,sans-serif;color:var(--text);background:var(--panel);border:1px solid #596a70;border-radius:6px;padding:7px}
 .shape-card .shape-omissions{font:12px system-ui,sans-serif;min-height:20px;margin-top:4px;color:var(--accent)}
 .instrument-bar+.modes{margin-top:8px}
-@media(max-width:600px){.header .brand{font-size:18px}.instrument-bar a{padding:5px 8px}.bass-selector{font-size:13px;gap:4px}.bass-selector select{font-size:13px;max-width:165px}}
+@media(max-width:600px){.header .brand{font-size:18px}.instrument-bar button{padding:5px 8px}.bass-selector{font-size:13px;gap:4px}.bass-selector select{font-size:13px;max-width:165px}}

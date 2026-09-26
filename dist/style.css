@@ -77,3 +77,10 @@
  #theory-summary{margin:10px 14px 15px}
 }
 .study .prompt-row .actions{display:none}
+/* Keep the reverse exercise's board fixed while feedback changes. */
+.reverse .prompt-row #question-help{min-height:3em}
+.reverse.answered #answer-area{display:none}
+#reverse-answer{display:none}
+.reverse.answered #reverse-answer{display:flex;min-height:0;padding:8px 16px 12px;border-top:1px solid var(--line)}
+.reverse.answered #reverse-answer .answer-main{font-size:24px}
+.reverse.answered #reverse-answer .answer-detail{margin-top:2px;font-size:13px}

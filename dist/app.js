@@ -2,23 +2,32 @@
  'use strict';
  const T=window.FretTheory,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
  const dots=[3,5,7,9,12];
- let isBass=location.hash==='#bass'||(location.hash!=='#guitar'&&document.body.dataset.instrument==='bass');
+ let lastInstrument='';try{lastInstrument=localStorage.getItem('fret-notes-last-instrument')||'';}catch{}
+ const requestedInstrument=['#guitar','#bass','#bass4','#bass5'].includes(location.hash)?location.hash.slice(1):lastInstrument||document.body.dataset.instrument;
+ let isBass=requestedInstrument.startsWith('bass');
  let bassCount=4;try{bassCount=localStorage.getItem('fret-notes-bass-string-count')==='5'?5:4;}catch{}
+ if(requestedInstrument==='bass4'||requestedInstrument==='bass5')bassCount=Number(requestedInstrument.slice(-1));
  let C=window.FretCore.forInstrument(isBass?'bass':'guitar',bassCount);
  let STORAGE=isBass?`fret-notes-bass-${bassCount}-settings-v1`:'fret-notes-settings-v1';
  let stored;try{stored=JSON.parse(localStorage.getItem(STORAGE)||'null');}catch{}
- let settings={...C.normalize(stored),...T.normalize(stored)},deck=[],index=0,round=1,revealed=false,chosen=null,cursor=null;
+ let settings={...C.normalize(stored),...T.normalize(stored)},deck=[],index=0,round=1,revealed=false,chosen=null,cursor=null,inspected=null;
  const current=()=>deck[index]||null;
  const allowed=p=>C.allowed(p,settings);
  const firstOnString=string=>C.candidates(settings).find(p=>p.string===string);
  function save(){try{localStorage.setItem(STORAGE,JSON.stringify(settings));$('#save-status').textContent='設定はこのブラウザーに自動保存';}catch{$('#save-status').textContent='このブラウザーでは設定を保存できません';}}
- function reset(){deck=C.shuffled(C.candidates(settings));index=0;round=1;revealed=false;chosen=null;cursor=null;render();}
+ function reset(){deck=C.shuffled(C.candidates(settings));index=0;round=1;revealed=false;chosen=null;cursor=null;inspected=null;render();}
  function next(){if(!current())return;if(index+1<deck.length)index++;else{deck=C.shuffled(C.candidates(settings),current());index=0;round++;}revealed=false;chosen=null;cursor=null;render();}
  function reveal(){if(!current()||settings.mode==='study')return;revealed=true;render();}
  function primary(){if(revealed)next();else reveal();}
  function answer(p){if(settings.mode!=='reverse'||!current())return;if(revealed){next();return;}if(!allowed(p))return;chosen=p;revealed=true;render();}
  function changeScope(){save();reset();}
  function noteHTML(p,tone=null){if(tone){if(settings.toneLabels==='degree')return tone.degree;if(settings.toneLabels==='name')return tone.name;return `${tone.name}<small>${tone.degree}</small>`;}const n=C.name(p,settings.notation).split(' / ');return n.length===1?n[0]:`${n[0]}<small>${n[1]}</small>`;}
+ function renderInspection(){
+  const panel=$('#note-inspection');panel.hidden=settings.mode!=='study'||!inspected;
+  if(panel.hidden)return;
+  const layers=T.layers(settings),matches=layers.map(layer=>({layer,tone:layer.tones.find(t=>t.pitch===C.pitch(inspected))})).filter(entry=>entry.tone);
+  panel.innerHTML=`<strong>${inspected.string}弦 ${inspected.fret}F · ${C.name(inspected,settings.notation)}</strong><div>${matches.map(({layer,tone})=>`<span class="inspection-entry layer-${layer.index}"><span class="layer-tag">${layer.index+1}</span>${layer.root} ${layer.pattern.label}：${tone.name}（${tone.degree}）</span>`).join('')||`<span class="inspection-empty">${layers.length?'選択中のコード・スケールには含まれません。':'指板をタップして音名を確認できます。'}</span>`}</div>`;
+ }
  function options(catalog){const groups=[...new Set(catalog.map(p=>p.group))];return groups.map(group=>`<optgroup label="${group}">${catalog.filter(p=>p.group===group).map(p=>`<option value="${p.id}">${p.label}</option>`).join('')}</optgroup>`).join('');}
  function shapeDiagram(shape,chordName){
   const positions=shape.frets.map(f=>f===null?'×':f).join('・');
@@ -73,10 +82,11 @@
  function renderStudy(){
   const study=settings.mode==='study',pattern=T.selected(settings),layers=T.layers(settings),multiple=layers.length>1;
   document.body.classList.toggle('comparing',study&&multiple);
-  $('#show-shapes').hidden=!study||settings.studyView!=='chord';
+  const hasChords=layers.some(layer=>layer.kind==='chord');
+  $('#show-shapes').hidden=!study||!hasChords;
   $('#comparison-legend').hidden=!study||!multiple;
   $('#comparison-legend').innerHTML=study&&multiple?layers.map(layer=>`<span class="layer-legend layer-${layer.index}"><span class="layer-tag">${layer.index+1}</span>${layer.root} ${layer.pattern.label}</span>`).join(''):'';
-  if($('#chord-shapes').open){if(study&&settings.studyView==='chord')renderShapes();else $('#chord-shapes').close();}
+  if($('#chord-shapes').open){if(study&&hasChords)renderShapes();else $('#chord-shapes').close();}
   $('#study-tools').hidden=!study;
   $('#theory-controls').hidden=!pattern;
   $('#theory-summary').hidden=!study||!pattern;
@@ -88,9 +98,9 @@
   const title=isChord?settings.studyRoot+pattern.suffix:settings.studyRoot+' '+pattern.label;
   $('#question').textContent=title;
   $('#question-kicker').textContent=isChord?'CHORD TONES':'SCALE MAP';
-  $('#question-help').textContent=`${multiple?'音名の下の色の目印で、共通音とそれぞれの音を比較できます。':'構成音の全位置を表示。'}${settings.highlightRange?'練習範囲外は暗く表示しています。':'範囲の色分けはOFFです。'}`;
+  $('#question-help').textContent=`${multiple?'音の下の番号・色が所属先です。指板をタップすると各所属先での度数を確認できます。':'構成音の全位置を表示。指板をタップすると音名と度数を確認できます。'}${settings.highlightRange?'範囲外は暗く表示。':''}`;
   $('#mode-label').textContent=isChord?'コードの構成音を確認する':'スケールの構成音を確認する';
-  $('#board-legend').textContent=multiple?'色の目印＝各比較対象の構成音':'R：ルート（黄緑）／ 構成音（青）';
+  $('#board-legend').textContent=multiple?'番号＋色＝所属先 ／ タップで詳細':'R：ルート（黄緑）／ 構成音（青）';
   $('#study-root').value=settings.studyRoot;
   $('#tone-labels').value=settings.toneLabels;
   $('#tone-labels').closest('label').hidden=multiple;
@@ -114,25 +124,23 @@
   if(isBass===nextBass&&(!nextBass||C.stringCount===nextCount))return;
   const fallback={...settings,strings:isBass!==nextBass||settings.strings.length===C.stringCount?undefined:settings.strings};
   save();isBass=nextBass;bassCount=nextCount;
-  try{localStorage.setItem('fret-notes-bass-string-count',String(bassCount));}catch{}
+  try{localStorage.setItem('fret-notes-bass-string-count',String(bassCount));localStorage.setItem('fret-notes-last-instrument',isBass?'bass'+bassCount:'guitar');}catch{}
   C=window.FretCore.forInstrument(isBass?'bass':'guitar',bassCount);
   STORAGE=isBass?`fret-notes-bass-${bassCount}-settings-v1`:'fret-notes-settings-v1';
   let saved;try{saved=JSON.parse(localStorage.getItem(STORAGE)||'null');}catch{}
   settings={...C.normalize(saved||fallback),...T.normalize(saved||fallback)};
   buildStringControls();updateInstrument();reset();
-  history.replaceState(null,'','#'+C.instrument);
+  history.replaceState(null,'','#'+(isBass?'bass'+bassCount:'guitar'));
  }
  function updateInstrument(){
   document.body.dataset.instrument=C.instrument;
   document.title=`Fret Notes for ${isBass?'Bass':'Guitar'}`;
   $('.brand-name small').textContent=`for ${isBass?'Bass':'Guitar'}`;
   $('.page-footer>span').textContent=`FRET NOTES FOR ${isBass?'BASS':'GUITAR'}`;
-  $('.bass-selector').hidden=!isBass;
-  $$('[data-instrument-switch]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.instrumentSwitch===C.instrument)));
+  $$('[data-instrument-switch]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.instrumentSwitch===C.instrument&&(!isBass||Number(button.dataset.stringCount)===C.stringCount))));
   $('link[rel=manifest]').setAttribute('href',isBass?'bass.webmanifest':'manifest.webmanifest');
   $('.brand').setAttribute('href','#'+C.instrument);
   document.body.style.setProperty('--string-count',C.stringCount);
-  $('#bass-string-count').value=String(C.stringCount);
   $('.tuning').innerHTML=`STANDARD <span>${C.openNames.slice().reverse().join(' ')}</span>`;
   $('#board').setAttribute('aria-label',`${isBass?'ベース':'ギター'}指板 ${C.stringCount}弦 0〜12フレット`);
   $('#string-direction').textContent=`上：1弦 · 下：${C.stringCount}弦`;
@@ -149,8 +157,8 @@
  function buildControls(){
   buildStudyControls();
   updateInstrument();
-  $$('[data-instrument-switch]').forEach(button=>button.addEventListener('click',()=>switchInstrument(button.dataset.instrumentSwitch)));
-  $('#bass-string-count').addEventListener('change',e=>{if(isBass)switchInstrument('bass',e.target.value);});
+  $$('[data-instrument-switch]').forEach(button=>button.addEventListener('click',()=>switchInstrument(button.dataset.instrumentSwitch,button.dataset.stringCount||bassCount)));
+  window.addEventListener('hashchange',()=>{const hash=location.hash.slice(1);if(hash==='guitar')switchInstrument('guitar');else if(['bass','bass4','bass5'].includes(hash))switchInstrument('bass',hash==='bass'?bassCount:Number(hash.slice(-1)));});
   buildStringControls();
   $('#fret-options').innerHTML=Array.from({length:13},(_,n)=>`<label class="choice ${dots.includes(n)?'dot-fret':''}"><input type="checkbox" data-fret="${n}" aria-label="${n}フレット"><span>${n}</span></label>`).join('');
   $$('#fret-options input').forEach(el=>el.addEventListener('change',()=>{settings.frets=$$('#fret-options input:checked').map(x=>Number(x.dataset.fret));changeScope();}));
@@ -179,20 +187,22 @@
     const showName=(study&&(!pattern||!!tone))||(showTarget&&revealed)||correct||wrong;
     const noteClass=multiple&&matches.length?'study-combined':tone?(tone.degree==='R'?'study-root':'study-tone'):showTarget?'target'+(revealed?'':' blank'):correct?'correct':wrong?'wrong':'';
     let label=`${s}弦 ${f}フレット`;
-    if(showName)label+=matches.length?` ${matches.map(x=>`${x.index+1}: ${x.tone.name} ${x.tone.degree}`).join('、')}`:tone?` ${tone.name} 度数 ${tone.degree}`:` ${C.name(p,settings.notation)}`;if(showTarget&&!revealed)label+=' 出題位置';
+    if(showName)label+=matches.length?` ${matches.map(x=>`${x.index+1}: ${layers[x.index].root} ${layers[x.index].pattern.label} の ${x.tone.name} ${x.tone.degree}`).join('、')}`:tone?` ${tone.name} 度数 ${tone.degree}`:` ${C.name(p,settings.notation)}`;if(showTarget&&!revealed)label+=' 出題位置';
     if(correct)label+=' 正解';if(wrong)label+=' 選択した位置';
     const doubleDots=C.stringCount===4?[1,3]:C.stringCount===5?[2,3]:[2,4];
     const inlay=dots.includes(f)&&((f!==12&&s===Math.floor(C.stringCount/2))||(f===12&&doubleDots.includes(s)));
-    const clickable=reverse&&!!target&&(revealed||active);
+    const clickable=study||(reverse&&!!target&&(revealed||active));
+    const selected=study&&inspected&&C.key(inspected)===C.key(p);
+    const tabbable=study?(cursor?C.key(cursor)===C.key(p):s===1&&f===0):clickable&&cursor&&C.key(cursor)===C.key(p);
     if(reverse&&revealed)label+=' 次の問題へ';
-    const display=multiple&&matches.length?`<span class="combined-name">${tone.name}</span><span class="layer-marks">${matches.map(x=>`<i class="layer-mark layer-${x.index}" aria-hidden="true"></i>`).join('')}</span>`:noteHTML(p,tone);
-    html+=`<button type="button" class="cell ${f===0?'open':''} ${!active&&settings.highlightRange?'outside':''} ${inlay?'inlay':''}" style="--string-size:${.6+s*.37}px" data-position="${s}:${f}" aria-label="${label}" ${clickable?'':'aria-disabled="true"'} tabindex="${clickable&&cursor&&C.key(cursor)===C.key(p)?0:-1}">${showName||showTarget?`<span class="note ${noteClass}">${showName?display:'?'}</span>`:''}</button>`;
+    const display=multiple&&matches.length?`<span class="combined-name">${tone.name}</span><span class="layer-marks">${matches.map(x=>`<span class="layer-mark layer-${x.index}" aria-hidden="true">${x.index+1}</span>`).join('')}</span>`:noteHTML(p,tone);
+    html+=`<button type="button" class="cell ${selected?'inspected':''} ${f===0?'open':''} ${!active&&settings.highlightRange?'outside':''} ${inlay?'inlay':''}" style="--string-size:${.6+s*.37}px" data-position="${s}:${f}" aria-label="${label}" ${study?`aria-pressed="${!!selected}"`:''} ${clickable?'':'aria-disabled="true"'} tabindex="${tabbable?0:-1}">${showName||showTarget?`<span class="note ${noteClass}">${showName?display:'?'}</span>`:''}</button>`;
    }
   }
   html+='<div></div>';for(let f=0;f<=12;f++)html+=`<div class="dot-row">${dots.includes(f)?'<i></i>':''}${f===12?'<i></i>':''}</div>`;
   board.innerHTML=html;
   if(settings.mode==='reverse'&&!revealed&&target){const first=board.querySelector(`[data-position="${C.key(firstOnString(target.string))}"]`);if(!cursor&&first)first.tabIndex=0;}
-  board.querySelectorAll('[data-position]').forEach(el=>el.addEventListener('click',()=>{const [string,fret]=el.dataset.position.split(':').map(Number);answer({string,fret});}));
+  board.querySelectorAll('[data-position]').forEach(el=>el.addEventListener('click',()=>{const [string,fret]=el.dataset.position.split(':').map(Number);if(settings.mode==='study'){inspected={string,fret};cursor=inspected;renderBoard();renderInspection();}else answer({string,fret});}));
   $('.board-shell').scrollLeft=scroll;
   if(focused){if(revealed)$('#primary').focus({preventScroll:true});else board.querySelector(`[data-position="${focused}"]`)?.focus({preventScroll:true});}
  }
@@ -238,12 +248,21 @@
   $('.keyboard-hint').innerHTML=reverse?'<kbd>↑↓←→</kbd> 移動 <kbd>Enter</kbd> 回答 ／ <kbd>Space</kbd> 表示・次へ':'<kbd>Space</kbd> で表示・次へ';
   renderStudy();
   renderBoard();
+  renderInspection();
   if(target&&!study){const f=reverse?firstOnString(target.string).fret:target.fret;const el=$(`[data-position="${target.string}:${f}"]`);if(el&&!revealed&&!cursor){const shell=$('.board-shell');const left=el.offsetLeft-$('#board').offsetLeft;shell.scrollLeft=Math.max(0,left-shell.clientWidth/2+el.clientWidth/2);}}
  }
  document.addEventListener('keydown',e=>{
   if(e.repeat)return;
   const el=e.target;if(el.closest('#settings,.modes,.instrument-bar,#settings-toggle')||el.matches('input,select,textarea,[contenteditable=true]'))return;
-  if(settings.mode==='study'||!current())return;
+  if(settings.mode==='study'){
+   if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&el.dataset.position){
+    e.preventDefault();const [string,fret]=el.dataset.position.split(':').map(Number);
+    cursor={string:Math.max(1,Math.min(C.stringCount,string+(e.key==='ArrowDown'?1:e.key==='ArrowUp'?-1:0))),fret:Math.max(0,Math.min(12,fret+(e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0)))};
+    $$('#board .cell').forEach(x=>x.tabIndex=-1);const cell=$(`[data-position="${C.key(cursor)}"]`);cell.tabIndex=0;cell.focus();
+   }
+   return;
+  }
+  if(!current())return;
   if(e.code==='Space'){e.preventDefault();primary();return;}
   if(settings.mode!=='reverse'||revealed)return;
   if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){

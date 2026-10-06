@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="指板上の音名を、自分のペースで。位置から音名、音名から位置、全音名の3つのモードで練習できます。">
+<meta name="description" content="ギター・4弦・5弦ベースの指板トレーニング。音名、コードトーン、スケールを重ねて比較できます。">
 <meta name="theme-color" content="#10171c">
 <title>Fret Notes for Guitar</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23131c21'/%3E%3Cpath d='M9 6v20M21 6v20M5 12h22M5 21h22' stroke='%23809299'/%3E%3Ccircle cx='15' cy='17' r='5' fill='%23d7f57a'/%3E%3C/svg%3E">
@@ -13,7 +13,7 @@
 <div class="app">
  <header class="header"><a class="brand" href="./"><span class="brand-icon" aria-hidden="true">♮</span><span class="brand-name">Fret Notes <small>for Guitar</small></span></a><div class="header-tools"><span class="tuning">STANDARD <span>E A D G B E</span></span><button id="install-app" class="install-app" type="button" hidden>PCにインストール</button><button id="settings-toggle" class="settings-toggle" aria-expanded="false" aria-controls="settings">出題範囲・設定 <span aria-hidden="true">⚙</span></button></div></header>
  <main>
- <div class="instrument-bar"><nav aria-label="楽器"><button type="button" data-instrument-switch="guitar" aria-pressed="true">Guitar</button><button type="button" data-instrument-switch="bass" aria-pressed="false">Bass</button></nav><label class="bass-selector" hidden>弦数 <select id="bass-string-count"><option value="4">4弦ベース</option><option value="5">5弦ベース（Low B）</option></select></label></div>
+ <div class="instrument-bar"><nav aria-label="楽器"><button type="button" data-instrument-switch="guitar" aria-pressed="true">Guitar</button><button type="button" data-instrument-switch="bass" data-string-count="4" aria-pressed="false">4弦 Bass</button><button type="button" data-instrument-switch="bass" data-string-count="5" aria-pressed="false">5弦 Bass</button></nav><span class="private-label">本人限定</span></div>
  <nav class="modes" aria-label="学習モード"><button data-mode="forward" class="mode active" aria-pressed="true"><span class="mode-num">01</span>位置 → 音名</button><button data-mode="reverse" class="mode" aria-pressed="false"><span class="mode-num">02</span>音名 → 位置</button><button data-mode="study" class="mode" aria-pressed="false"><span class="mode-num">03</span>全音名表示</button></nav>
  <div class="workspace">
  <section class="practice" aria-label="練習">
@@ -33,6 +33,7 @@
  <div id="comparison-legend" class="comparison-legend" aria-label="比較対象の色" hidden></div>
  <div class="board-shell"><div id="board" class="board" aria-label="ギター指板 0〜12フレット"></div></div>
  <div class="board-caption"><span><i class="legend-dot"></i><span id="board-legend">出題位置</span></span><span><span id="string-direction">上：1弦 · 下：6弦</span> <span class="scroll-hint">／ 横にスクロールできます</span></span></div>
+ <div id="note-inspection" class="note-inspection" aria-live="polite" aria-atomic="true" hidden></div>
  <div id="theory-summary" aria-live="polite" aria-atomic="true" hidden><div id="tone-list" class="tone-list"></div><p id="pattern-description" class="pattern-description"></p><p class="theory-note">R＝ルート。構成音はルートと度数に沿って表記します（E♯・B♭♭など）。</p><p class="theory-note">指板は構成音の位置を示します。コードの押さえ方・運指の指定ではありません。</p></div>
  <div class="practice-footer"><span id="scope-summary"></span><span id="shuffle-label">一巡するまで、重複なし</span></div>
  </section>

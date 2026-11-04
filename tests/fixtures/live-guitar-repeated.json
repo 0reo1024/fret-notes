@@ -1,0 +1,657 @@
+{
+  "source": "P0 2026-10-27: 3rd string open G3 picked 4 times with a mute after each, then 4 times without muting (tuning: all fourths E2 A2 D3 G3 C4 F4; Nano Cortex input 1; debug probe build)",
+  "targets": [
+    55
+  ],
+  "picks": 8,
+  "timeline": [
+    {
+      "audioTimeMs": 69.97916666666666,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68
+    },
+    {
+      "audioTimeMs": 139.97916666666666,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68.1
+    },
+    {
+      "audioTimeMs": 210.97916666666666,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -67.9
+    },
+    {
+      "audioTimeMs": 280.9791666666667,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68.2
+    },
+    {
+      "audioTimeMs": 350.9791666666667,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -67.9
+    },
+    {
+      "audioTimeMs": 420.9791666666667,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68.2
+    },
+    {
+      "audioTimeMs": 490.9791666666667,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -67.9
+    },
+    {
+      "audioTimeMs": 560.9791666666667,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68
+    },
+    {
+      "audioTimeMs": 630.9791666666666,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68.1
+    },
+    {
+      "audioTimeMs": 700.9791666666667,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -69
+    },
+    {
+      "audioTimeMs": 770.9791666666666,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68.4
+    },
+    {
+      "audioTimeMs": 840.9791666666667,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68
+    },
+    {
+      "audioTimeMs": 910.9791666666666,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68.3
+    },
+    {
+      "audioTimeMs": 980.9791666666666,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68.1
+    },
+    {
+      "audioTimeMs": 1050.9791666666665,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -67.7
+    },
+    {
+      "audioTimeMs": 1120.9791666666667,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68.1
+    },
+    {
+      "audioTimeMs": 1190.9791666666667,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68
+    },
+    {
+      "audioTimeMs": 1260.9791666666667,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68
+    },
+    {
+      "audioTimeMs": 1330.9791666666665,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68
+    },
+    {
+      "audioTimeMs": 1400.9791666666667,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -68.5
+    },
+    {
+      "audioTimeMs": 1470.9791666666667,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -67.4
+    },
+    {
+      "audioTimeMs": 1540.9791666666665,
+      "state": "unstable",
+      "frequency": null,
+      "levelDb": -50.2
+    },
+    {
+      "audioTimeMs": 1660.9791666666667,
+      "state": "unstable",
+      "frequency": null,
+      "levelDb": -21.6
+    },
+    {
+      "audioTimeMs": 1780.9791666666665,
+      "state": "unstable",
+      "frequency": null,
+      "levelDb": -22.8
+    },
+    {
+      "audioTimeMs": 1900.9791666666667,
+      "state": "stable",
+      "frequency": 196.13227078694425,
+      "levelDb": -23.2
+    },
+    {
+      "audioTimeMs": 2020.9791666666667,
+      "state": "stable",
+      "frequency": 196.04025126630128,
+      "levelDb": -24.3
+    },
+    {
+      "audioTimeMs": 2140.979166666667,
+      "state": "stable",
+      "frequency": 196.03249979611957,
+      "levelDb": -24.7
+    },
+    {
+      "audioTimeMs": 2271,
+      "state": "stable",
+      "frequency": 195.99764819429734,
+      "levelDb": -25.2
+    },
+    {
+      "audioTimeMs": 2391,
+      "state": "stable",
+      "frequency": 195.95373813274733,
+      "levelDb": -26
+    },
+    {
+      "audioTimeMs": 2511,
+      "state": "stable",
+      "frequency": 195.88900811368595,
+      "levelDb": -28.1
+    },
+    {
+      "audioTimeMs": 2621,
+      "state": "stable",
+      "frequency": 195.85153342670313,
+      "levelDb": -41.9
+    },
+    {
+      "audioTimeMs": 2751,
+      "state": "stable",
+      "frequency": 195.80806550184656,
+      "levelDb": -45.6
+    },
+    {
+      "audioTimeMs": 2871,
+      "state": "stable",
+      "frequency": 195.80806550184656,
+      "levelDb": -47.4
+    },
+    {
+      "audioTimeMs": 2991,
+      "state": "stable",
+      "frequency": 195.92522915075486,
+      "levelDb": -48.9
+    },
+    {
+      "audioTimeMs": 3121,
+      "state": "stable",
+      "frequency": 196.01612250967887,
+      "levelDb": -49.4
+    },
+    {
+      "audioTimeMs": 3241,
+      "state": "stable",
+      "frequency": 196.01612250967887,
+      "levelDb": -51.7
+    },
+    {
+      "audioTimeMs": 3361,
+      "state": "unstable",
+      "frequency": null,
+      "levelDb": -23
+    },
+    {
+      "audioTimeMs": 3481,
+      "state": "unstable",
+      "frequency": null,
+      "levelDb": -21.7
+    },
+    {
+      "audioTimeMs": 3601,
+      "state": "unstable",
+      "frequency": null,
+      "levelDb": -22.5
+    },
+    {
+      "audioTimeMs": 3721,
+      "state": "stable",
+      "frequency": 196.2014117392822,
+      "levelDb": -22.9
+    },
+    {
+      "audioTimeMs": 3841,
+      "state": "stable",
+      "frequency": 196.09857934188005,
+      "levelDb": -23.7
+    },
+    {
+      "audioTimeMs": 3971,
+      "state": "stable",
+      "frequency": 196.03259999150032,
+      "levelDb": -25.2
+    },
+    {
+      "audioTimeMs": 4091,
+      "state": "stable",
+      "frequency": 195.99782094487833,
+      "levelDb": -26.2
+    },
+    {
+      "audioTimeMs": 4211,
+      "state": "stable",
+      "frequency": 195.96667383889778,
+      "levelDb": -27.9
+    },
+    {
+      "audioTimeMs": 4331,
+      "state": "stable",
+      "frequency": 195.96667383889778,
+      "levelDb": -37.7
+    },
+    {
+      "audioTimeMs": 4461,
+      "state": "stable",
+      "frequency": 196.07202684209034,
+      "levelDb": -41
+    },
+    {
+      "audioTimeMs": 4581,
+      "state": "stable",
+      "frequency": 196.3599835888914,
+      "levelDb": -44.3
+    },
+    {
+      "audioTimeMs": 4701,
+      "state": "stable",
+      "frequency": 196.3599835888914,
+      "levelDb": -45.1
+    },
+    {
+      "audioTimeMs": 4831,
+      "state": "stable",
+      "frequency": 196.05252332883617,
+      "levelDb": -47.2
+    },
+    {
+      "audioTimeMs": 4941,
+      "state": "stable",
+      "frequency": 196.02622991497833,
+      "levelDb": -48.8
+    },
+    {
+      "audioTimeMs": 5071.020833333334,
+      "state": "stable",
+      "frequency": 195.7130656746468,
+      "levelDb": -25
+    },
+    {
+      "audioTimeMs": 5201.020833333334,
+      "state": "stable",
+      "frequency": 196.02622991497833,
+      "levelDb": -21.1
+    },
+    {
+      "audioTimeMs": 5331.020833333334,
+      "state": "stable",
+      "frequency": 196.34847020549088,
+      "levelDb": -22.2
+    },
+    {
+      "audioTimeMs": 5461.020833333333,
+      "state": "stable",
+      "frequency": 196.34847020549088,
+      "levelDb": -23.3
+    },
+    {
+      "audioTimeMs": 5581.020833333334,
+      "state": "stable",
+      "frequency": 196.2635499360038,
+      "levelDb": -22.7
+    },
+    {
+      "audioTimeMs": 5711.020833333333,
+      "state": "stable",
+      "frequency": 196.16002780231958,
+      "levelDb": -23.7
+    },
+    {
+      "audioTimeMs": 5841.020833333333,
+      "state": "stable",
+      "frequency": 196.12072377429945,
+      "levelDb": -24.1
+    },
+    {
+      "audioTimeMs": 5961.020833333333,
+      "state": "stable",
+      "frequency": 196.08054530270564,
+      "levelDb": -35.8
+    },
+    {
+      "audioTimeMs": 6081.020833333334,
+      "state": "stable",
+      "frequency": 196.01997591666805,
+      "levelDb": -39.4
+    },
+    {
+      "audioTimeMs": 6201.020833333334,
+      "state": "stable",
+      "frequency": 195.86091336746614,
+      "levelDb": -42.9
+    },
+    {
+      "audioTimeMs": 6321.020833333334,
+      "state": "stable",
+      "frequency": 195.86091336746614,
+      "levelDb": -44.1
+    },
+    {
+      "audioTimeMs": 6451.020833333334,
+      "state": "stable",
+      "frequency": 195.93116077553964,
+      "levelDb": -45.1
+    },
+    {
+      "audioTimeMs": 6561.020833333333,
+      "state": "stable",
+      "frequency": 196.06096799106865,
+      "levelDb": -47.1
+    },
+    {
+      "audioTimeMs": 6691.020833333333,
+      "state": "stable",
+      "frequency": 196.06096799106865,
+      "levelDb": -28.8
+    },
+    {
+      "audioTimeMs": 6811.020833333333,
+      "state": "stable",
+      "frequency": 196.06096799106865,
+      "levelDb": -22.6
+    },
+    {
+      "audioTimeMs": 6931.020833333333,
+      "state": "stable",
+      "frequency": 196.02501617231331,
+      "levelDb": -23.5
+    },
+    {
+      "audioTimeMs": 7051.020833333333,
+      "state": "stable",
+      "frequency": 196.00401161541768,
+      "levelDb": -24.4
+    },
+    {
+      "audioTimeMs": 7171.020833333333,
+      "state": "stable",
+      "frequency": 195.97302537680974,
+      "levelDb": -24.7
+    },
+    {
+      "audioTimeMs": 7291.020833333334,
+      "state": "stable",
+      "frequency": 195.95257138131475,
+      "levelDb": -25.5
+    },
+    {
+      "audioTimeMs": 7411.020833333334,
+      "state": "stable",
+      "frequency": 195.926083266168,
+      "levelDb": -25.9
+    },
+    {
+      "audioTimeMs": 7531.020833333334,
+      "state": "stable",
+      "frequency": 195.8686872393793,
+      "levelDb": -30.8
+    },
+    {
+      "audioTimeMs": 7651.020833333333,
+      "state": "stable",
+      "frequency": 195.8535922408074,
+      "levelDb": -40.9
+    },
+    {
+      "audioTimeMs": 7761.020833333333,
+      "state": "stable",
+      "frequency": 195.8440464907311,
+      "levelDb": -45.3
+    },
+    {
+      "audioTimeMs": 7891.020833333333,
+      "state": "stable",
+      "frequency": 195.8440464907311,
+      "levelDb": -47.6
+    },
+    {
+      "audioTimeMs": 8011.020833333333,
+      "state": "stable",
+      "frequency": 195.89399033263473,
+      "levelDb": -50.1
+    },
+    {
+      "audioTimeMs": 8131.020833333332,
+      "state": "stable",
+      "frequency": 195.98641995027918,
+      "levelDb": -49.2
+    },
+    {
+      "audioTimeMs": 8251.020833333334,
+      "state": "stable",
+      "frequency": 195.89399033263473,
+      "levelDb": -52
+    },
+    {
+      "audioTimeMs": 8371.020833333332,
+      "state": "stable",
+      "frequency": 195.88710980984933,
+      "levelDb": -54.6
+    },
+    {
+      "audioTimeMs": 8491.020833333334,
+      "state": "stable",
+      "frequency": 195.66452122243268,
+      "levelDb": -54.3
+    },
+    {
+      "audioTimeMs": 8621.020833333332,
+      "state": "silence",
+      "frequency": null,
+      "levelDb": -59.7
+    },
+    {
+      "audioTimeMs": 8691.020833333332,
+      "state": "unstable",
+      "frequency": null,
+      "levelDb": -31.8
+    },
+    {
+      "audioTimeMs": 8801.020833333334,
+      "state": "unstable",
+      "frequency": null,
+      "levelDb": -21.3
+    },
+    {
+      "audioTimeMs": 8931.020833333334,
+      "state": "unstable",
+      "frequency": null,
+      "levelDb": -22.4
+    },
+    {
+      "audioTimeMs": 9051.020833333334,
+      "state": "stable",
+      "frequency": 196.2214495357502,
+      "levelDb": -23.4
+    },
+    {
+      "audioTimeMs": 9171.041666666668,
+      "state": "stable",
+      "frequency": 196.2214495357502,
+      "levelDb": -23.9
+    },
+    {
+      "audioTimeMs": 9291.041666666666,
+      "state": "stable",
+      "frequency": 196.26340344083425,
+      "levelDb": -23.8
+    },
+    {
+      "audioTimeMs": 9411.041666666666,
+      "state": "stable",
+      "frequency": 196.26340344083425,
+      "levelDb": -24
+    },
+    {
+      "audioTimeMs": 9531.041666666666,
+      "state": "stable",
+      "frequency": 196.2131022340658,
+      "levelDb": -25
+    },
+    {
+      "audioTimeMs": 9651.041666666666,
+      "state": "stable",
+      "frequency": 196.20857308819362,
+      "levelDb": -25.5
+    },
+    {
+      "audioTimeMs": 9771.041666666668,
+      "state": "stable",
+      "frequency": 196.15447461861106,
+      "levelDb": -26.1
+    },
+    {
+      "audioTimeMs": 9891.041666666666,
+      "state": "stable",
+      "frequency": 196.0376528182189,
+      "levelDb": -27.5
+    },
+    {
+      "audioTimeMs": 10011.041666666668,
+      "state": "stable",
+      "frequency": 196.0357997044868,
+      "levelDb": -28.9
+    },
+    {
+      "audioTimeMs": 10131.041666666666,
+      "state": "stable",
+      "frequency": 196.0357997044868,
+      "levelDb": -19.5
+    },
+    {
+      "audioTimeMs": 10261.041666666668,
+      "state": "stable",
+      "frequency": 196.7004264528708,
+      "levelDb": -21.2
+    },
+    {
+      "audioTimeMs": 10381.041666666666,
+      "state": "stable",
+      "frequency": 196.7004264528708,
+      "levelDb": -22.8
+    },
+    {
+      "audioTimeMs": 10501.041666666668,
+      "state": "stable",
+      "frequency": 196.5486578638497,
+      "levelDb": -24
+    },
+    {
+      "audioTimeMs": 10621.041666666666,
+      "state": "stable",
+      "frequency": 196.47865439897865,
+      "levelDb": -25.2
+    },
+    {
+      "audioTimeMs": 10741.041666666666,
+      "state": "stable",
+      "frequency": 196.41741868201,
+      "levelDb": -25.6
+    },
+    {
+      "audioTimeMs": 10861.041666666666,
+      "state": "stable",
+      "frequency": 196.39625436814396,
+      "levelDb": -27
+    },
+    {
+      "audioTimeMs": 10981.041666666666,
+      "state": "stable",
+      "frequency": 196.23860378567846,
+      "levelDb": -27
+    },
+    {
+      "audioTimeMs": 11111.041666666666,
+      "state": "stable",
+      "frequency": 196.15787790217195,
+      "levelDb": -27.7
+    },
+    {
+      "audioTimeMs": 11231.041666666666,
+      "state": "stable",
+      "frequency": 196.12851615973025,
+      "levelDb": -28.4
+    },
+    {
+      "audioTimeMs": 11351.041666666668,
+      "state": "stable",
+      "frequency": 196.09787689706232,
+      "levelDb": -28.8
+    },
+    {
+      "audioTimeMs": 11471.041666666666,
+      "state": "stable",
+      "frequency": 196.07379533589486,
+      "levelDb": -30
+    },
+    {
+      "audioTimeMs": 11581.041666666666,
+      "state": "stable",
+      "frequency": 196.0607361938395,
+      "levelDb": -30.8
+    },
+    {
+      "audioTimeMs": 11701.041666666666,
+      "state": "stable",
+      "frequency": 196.02160316534986,
+      "levelDb": -30.6
+    },
+    {
+      "audioTimeMs": 11821.041666666666,
+      "state": "stable",
+      "frequency": 196.02160316534986,
+      "levelDb": -19.5
+    },
+    {
+      "audioTimeMs": 11951.041666666666,
+      "state": "stable",
+      "frequency": 196.45333525261967,
+      "levelDb": -21.2
+    }
+  ]
+}

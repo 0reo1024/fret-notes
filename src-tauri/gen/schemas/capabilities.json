@@ -1,0 +1,1 @@
+{"main":{"identifier":"main","description":"Fret Notes main window","local":true,"windows":["main"],"permissions":["core:default","core:window:allow-destroy"]}}

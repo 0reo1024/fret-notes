@@ -1,4 +1,4 @@
-const assert=require('node:assert/strict'),Core=require('../dist/core.js');
+const assert=require('node:assert/strict'),Core=require('../src/domain/instruments/core.ts');
 for(const n of [4,5]){
  const C=Core.forInstrument('bass',n),settings=C.normalize();
  assert.equal(C.candidates(settings).length,n*13);

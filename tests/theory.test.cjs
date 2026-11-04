@@ -1,6 +1,6 @@
 const assert=require('node:assert/strict');
-const T=require('../dist/theory.js');
-const C=require('../dist/core.js');
+const T=require('../src/domain/music/theory.ts');
+const C=require('../src/domain/instruments/core.ts');
 function tones(view,id,root){return T.tones({...T.normalize(),studyView:view,studyRoot:root,[view==='chord'?'studyChord':'studyScale']:id});}
 const pitches=(view,id,root)=>tones(view,id,root).map(t=>t.pitch);
 const names=(view,id,root)=>tones(view,id,root).map(t=>t.name);

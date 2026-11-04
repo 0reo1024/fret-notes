@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict');
-const Core=require('../dist/core.js'),T=require('../dist/theory.js');
+const Core=require('../src/domain/instruments/core.ts'),T=require('../src/domain/music/theory.ts');
 
 // Known fretboard notes and reverse answers, including octave duplicates.
 const cases=[

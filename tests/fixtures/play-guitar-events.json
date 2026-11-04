@@ -1,0 +1,431 @@
+{
+  "source": "Nano Cortex (3+4), guitar open E2, stage 3 estimator; analysis metadata only",
+  "targetMidi": 40,
+  "timeline": [
+    {
+      "audioTimeMs": 60.0,
+      "state": "warming",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 130.0,
+      "state": "warming",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 200.0,
+      "state": "unstable",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 320.0208333333333,
+      "state": "unstable",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 440.0625,
+      "state": "stable",
+      "frequency": 82.38902995091995
+    },
+    {
+      "audioTimeMs": 560.0625,
+      "state": "stable",
+      "frequency": 82.39427680299445
+    },
+    {
+      "audioTimeMs": 680.1041666666666,
+      "state": "stable",
+      "frequency": 82.38902995091995
+    },
+    {
+      "audioTimeMs": 800.1041666666666,
+      "state": "stable",
+      "frequency": 82.37528198415625
+    },
+    {
+      "audioTimeMs": 920.1041666666666,
+      "state": "stable",
+      "frequency": 82.37528198415625
+    },
+    {
+      "audioTimeMs": 1040.1041666666665,
+      "state": "stable",
+      "frequency": 82.3774068189658
+    },
+    {
+      "audioTimeMs": 1160.125,
+      "state": "stable",
+      "frequency": 82.38059237226842
+    },
+    {
+      "audioTimeMs": 1280.125,
+      "state": "stable",
+      "frequency": 82.38059237226842
+    },
+    {
+      "audioTimeMs": 1400.1666666666665,
+      "state": "stable",
+      "frequency": 82.38101734804513
+    },
+    {
+      "audioTimeMs": 1520.1666666666667,
+      "state": "stable",
+      "frequency": 82.38464314860194
+    },
+    {
+      "audioTimeMs": 1630.1666666666667,
+      "state": "stable",
+      "frequency": 82.39536908006163
+    },
+    {
+      "audioTimeMs": 1750.1666666666667,
+      "state": "stable",
+      "frequency": 82.42442665889352
+    },
+    {
+      "audioTimeMs": 1870.1875,
+      "state": "stable",
+      "frequency": 82.42442665889352
+    },
+    {
+      "audioTimeMs": 1990.1875,
+      "state": "stable",
+      "frequency": 82.38310621092003
+    },
+    {
+      "audioTimeMs": 2110.2291666666665,
+      "state": "stable",
+      "frequency": 82.38310621092003
+    },
+    {
+      "audioTimeMs": 2230.2291666666665,
+      "state": "stable",
+      "frequency": 82.39723178464855
+    },
+    {
+      "audioTimeMs": 2350.25,
+      "state": "unstable",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 2470.270833333333,
+      "state": "unstable",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 2580.2708333333335,
+      "state": "unstable",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 2700.3125,
+      "state": "stable",
+      "frequency": 83.00540612016744
+    },
+    {
+      "audioTimeMs": 2820.3125,
+      "state": "stable",
+      "frequency": 82.81086588276936
+    },
+    {
+      "audioTimeMs": 2940.333333333333,
+      "state": "stable",
+      "frequency": 82.70447591449287
+    },
+    {
+      "audioTimeMs": 3060.3333333333335,
+      "state": "stable",
+      "frequency": 82.64891229566173
+    },
+    {
+      "audioTimeMs": 3180.3541666666665,
+      "state": "stable",
+      "frequency": 82.61195511240457
+    },
+    {
+      "audioTimeMs": 3300.375,
+      "state": "stable",
+      "frequency": 82.55455795238866
+    },
+    {
+      "audioTimeMs": 3420.375,
+      "state": "stable",
+      "frequency": 82.53879207816689
+    },
+    {
+      "audioTimeMs": 3540.375,
+      "state": "stable",
+      "frequency": 82.54437356777986
+    },
+    {
+      "audioTimeMs": 3660.3958333333335,
+      "state": "stable",
+      "frequency": 82.54229645629212
+    },
+    {
+      "audioTimeMs": 3780.3958333333335,
+      "state": "stable",
+      "frequency": 82.54229645629212
+    },
+    {
+      "audioTimeMs": 3900.4375,
+      "state": "stable",
+      "frequency": 82.54229645629212
+    },
+    {
+      "audioTimeMs": 4020.4375,
+      "state": "stable",
+      "frequency": 82.54207065026996
+    },
+    {
+      "audioTimeMs": 4140.4375,
+      "state": "stable",
+      "frequency": 82.54163879927276
+    },
+    {
+      "audioTimeMs": 4250.458333333333,
+      "state": "stable",
+      "frequency": 82.52368131761008
+    },
+    {
+      "audioTimeMs": 4370.458333333334,
+      "state": "stable",
+      "frequency": 82.51669972714032
+    },
+    {
+      "audioTimeMs": 4490.479166666667,
+      "state": "stable",
+      "frequency": 82.51264798191869
+    },
+    {
+      "audioTimeMs": 4610.5,
+      "state": "stable",
+      "frequency": 82.51264798191869
+    },
+    {
+      "audioTimeMs": 4730.583333333334,
+      "state": "stable",
+      "frequency": 82.52085430721098
+    },
+    {
+      "audioTimeMs": 4850.583333333334,
+      "state": "stable",
+      "frequency": 82.52085430721098
+    },
+    {
+      "audioTimeMs": 4970.583333333333,
+      "state": "stable",
+      "frequency": 82.51201498570147
+    },
+    {
+      "audioTimeMs": 5090.583333333333,
+      "state": "stable",
+      "frequency": 82.51201498570147
+    },
+    {
+      "audioTimeMs": 5210.583333333333,
+      "state": "stable",
+      "frequency": 82.51201498570147
+    },
+    {
+      "audioTimeMs": 5330.583333333333,
+      "state": "unstable",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 5450.583333333333,
+      "state": "unstable",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 5570.604166666667,
+      "state": "unstable",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 5680.625,
+      "state": "stable",
+      "frequency": 82.65811510040426
+    },
+    {
+      "audioTimeMs": 5800.645833333333,
+      "state": "stable",
+      "frequency": 82.63310232580132
+    },
+    {
+      "audioTimeMs": 5920.666666666667,
+      "state": "stable",
+      "frequency": 82.60011299080415
+    },
+    {
+      "audioTimeMs": 6040.666666666667,
+      "state": "stable",
+      "frequency": 82.59420086886595
+    },
+    {
+      "audioTimeMs": 6160.6875,
+      "state": "stable",
+      "frequency": 82.57514863294915
+    },
+    {
+      "audioTimeMs": 6280.6875,
+      "state": "stable",
+      "frequency": 82.54180324845866
+    },
+    {
+      "audioTimeMs": 6400.708333333333,
+      "state": "stable",
+      "frequency": 82.55990534330692
+    },
+    {
+      "audioTimeMs": 6520.708333333333,
+      "state": "stable",
+      "frequency": 82.5571014163774
+    },
+    {
+      "audioTimeMs": 6640.729166666667,
+      "state": "stable",
+      "frequency": 82.5571014163774
+    },
+    {
+      "audioTimeMs": 6760.75,
+      "state": "stable",
+      "frequency": 82.55081292941905
+    },
+    {
+      "audioTimeMs": 6870.75,
+      "state": "stable",
+      "frequency": 82.54266213802013
+    },
+    {
+      "audioTimeMs": 6990.791666666666,
+      "state": "stable",
+      "frequency": 82.53712455338183
+    },
+    {
+      "audioTimeMs": 7110.791666666667,
+      "state": "stable",
+      "frequency": 82.52964668317671
+    },
+    {
+      "audioTimeMs": 7230.791666666667,
+      "state": "stable",
+      "frequency": 82.52964668317671
+    },
+    {
+      "audioTimeMs": 7350.8125,
+      "state": "stable",
+      "frequency": 82.52748732745205
+    },
+    {
+      "audioTimeMs": 7470.833333333333,
+      "state": "stable",
+      "frequency": 82.52748732745205
+    },
+    {
+      "audioTimeMs": 7590.854166666666,
+      "state": "stable",
+      "frequency": 82.52516436741703
+    },
+    {
+      "audioTimeMs": 7710.854166666667,
+      "state": "stable",
+      "frequency": 82.53266453743751
+    },
+    {
+      "audioTimeMs": 7820.875,
+      "state": "unstable",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 7940.875,
+      "state": "unstable",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 8060.895833333333,
+      "state": "stable",
+      "frequency": 250.7074399672067
+    },
+    {
+      "audioTimeMs": 8180.916666666667,
+      "state": "stable",
+      "frequency": 250.01843727863863
+    },
+    {
+      "audioTimeMs": 8300.9375,
+      "state": "unstable",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 8420.9375,
+      "state": "unstable",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 8540.9375,
+      "state": "unstable",
+      "frequency": null
+    },
+    {
+      "audioTimeMs": 8660.9375,
+      "state": "stable",
+      "frequency": 82.67026682434528
+    },
+    {
+      "audioTimeMs": 8780.958333333332,
+      "state": "stable",
+      "frequency": 82.66794738970252
+    },
+    {
+      "audioTimeMs": 8900.979166666668,
+      "state": "stable",
+      "frequency": 82.60172259331479
+    },
+    {
+      "audioTimeMs": 9020.979166666666,
+      "state": "stable",
+      "frequency": 82.60144382272308
+    },
+    {
+      "audioTimeMs": 9141.0,
+      "state": "stable",
+      "frequency": 82.57835271596605
+    },
+    {
+      "audioTimeMs": 9261.020833333334,
+      "state": "stable",
+      "frequency": 82.57835271596605
+    },
+    {
+      "audioTimeMs": 9381.041666666666,
+      "state": "stable",
+      "frequency": 82.57835271596605
+    },
+    {
+      "audioTimeMs": 9501.0625,
+      "state": "stable",
+      "frequency": 82.57308047773523
+    },
+    {
+      "audioTimeMs": 9621.0625,
+      "state": "stable",
+      "frequency": 82.55104004278888
+    },
+    {
+      "audioTimeMs": 9741.0625,
+      "state": "stable",
+      "frequency": 82.56592327404668
+    },
+    {
+      "audioTimeMs": 9861.083333333334,
+      "state": "stable",
+      "frequency": 82.5232222918359
+    },
+    {
+      "audioTimeMs": 9971.104166666666,
+      "state": "stable",
+      "frequency": 82.53740641684972
+    }
+  ]
+}

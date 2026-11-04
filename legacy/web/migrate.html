@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fret Notes 設定の移行</title>
+<style>body{max-width:700px;margin:60px auto;padding:24px;background:#10171c;color:#e4ecef;font:16px/1.8 system-ui}button,a{font:inherit;color:#d7f57a}button{padding:12px;background:#1c292f;border:1px solid #52616a;border-radius:8px}</style>
+<h1>旧ローカル版の設定を書き出す</h1>
+<p>以前Fret Notesを使ったブラウザーで、このページを開いてください。書き出したJSONファイルをデスクトップ版の「出題範囲・設定」→「設定を読み込む」で取り込めます。</p>
+<p>Workの公開サイトとは保存場所が異なります。このページは、同じブラウザーの localhost:4173 に保存された設定を対象にします。</p>
+<button id="export">設定を書き出す</button><p id="status" role="status"></p><a href="./">旧版を開く</a>
+<script>
+document.querySelector('#export').addEventListener('click',()=>{
+ try{
+  const profiles={};
+  for(const [id,key] of [['guitar','fret-notes-settings-v1'],['bass4','fret-notes-bass-4-settings-v1'],['bass5','fret-notes-bass-5-settings-v1']]){
+   const stored=localStorage.getItem(key);if(stored)profiles[id]=JSON.parse(stored);
+  }
+  const last=localStorage.getItem('fret-notes-last-instrument'),lastInstrument=['guitar','bass4','bass5'].includes(last)?last:'guitar';
+  const data={schemaVersion:1,lastInstrument,bassStringCount:localStorage.getItem('fret-notes-bass-string-count')==='5'?5:4,profiles};
+  const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),a=document.createElement('a');
+  a.href=url;a.download='fret-notes-settings.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  document.querySelector('#status').textContent=Object.keys(profiles).length?'設定を書き出しました':'このブラウザーには旧版の設定がありません。初期設定を書き出しました。';
+ }catch(e){document.querySelector('#status').textContent='書き出せません：'+String(e);}
+});
+</script></html>

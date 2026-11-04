@@ -1,0 +1,28 @@
+{
+  "name": "fret-notes-local",
+  "version": "1.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "tauri dev",
+    "dev": "vite --host 127.0.0.1 --port 1420 --strictPort",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && vite build",
+    "test": "node --import tsx --test tests/*.test.cjs tests/*.test.ts",
+    "tauri": "tauri",
+    "desktop:build": "tauri build --no-bundle && node scripts/package-desktop.mjs",
+    "desktop:dev": "tauri dev",
+    "desktop:installer": "node scripts/install-desktop.mjs --no-install",
+    "desktop:install": "npm run desktop:build && node scripts/install-desktop.mjs",
+    "legacy": "node scripts/server.mjs --open"
+  },
+  "engines": { "node": ">=22.12" },
+  "dependencies": { "@tauri-apps/api": "^2.12.1" },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.1",
+    "@types/node": "^26.6.4",
+    "typescript": "^5.9.3",
+    "tsx": "^4.23.15",
+    "vite": "^8.3.3"
+  }
+}

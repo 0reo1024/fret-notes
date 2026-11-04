@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="ギター・4弦・5弦ベースの指板トレーニング。音名、コードトーン、スケールを重ねて比較できます。">
+<meta name="theme-color" content="#242424">
+<title>Fret Notes for Guitar</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='3' fill='%23242424'/%3E%3Cpath d='M9 6v20M21 6v20M5 12h22M5 21h22' stroke='%23809299'/%3E%3Ccircle cx='15' cy='17' r='5' fill='%2375b6ff'/%3E%3C/svg%3E">
+
+<script type="module" src="/src/app/main.ts"></script>
+</head>
+<body data-instrument="guitar">
+<div class="app">
+ <main>
+ <div class="instrument-bar"><div class="instrument-picker"><span class="toolbar-label">楽器</span><nav aria-label="楽器"><button type="button" data-instrument-switch="guitar" aria-pressed="true">Guitar</button><button type="button" data-instrument-switch="bass" data-string-count="4" aria-pressed="false">4弦 Bass</button><button type="button" data-instrument-switch="bass" data-string-count="5" aria-pressed="false">5弦 Bass</button></nav></div><div class="instrument-tools"><span class="tuning">STANDARD <span>E A D G B E</span></span><button id="settings-toggle" class="settings-toggle" aria-expanded="false" aria-controls="settings">表示・出題設定</button></div></div>
+ <nav class="feature-tabs" aria-label="アプリ機能">
+  <button type="button" data-feature="study" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 3v18m6-18v18M4 9h16M4 15h16"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg><span>指板学習</span></button>
+  <button type="button" data-feature="tuner" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3v7a4 4 0 0 0 8 0V3M12 14v7M5 3h6m2 0h6"/></svg><span>チューナー</span></button>
+  <button type="button" data-feature="play" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9v6m4-10v14m4-16v18m4-15v12m4-9v6"/></svg><span>演奏練習</span></button>
+  <button type="button" data-feature="harmony" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="17" r="2.5"/><circle cx="12" cy="11" r="2.5"/><circle cx="17" cy="5" r="2.5"/><path d="M9.5 17H20M14.5 11H20M4 5h10.5"/></svg><span>ハーモニー</span></button>
+  <button type="button" data-feature="progression" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 18h18M8 6v12M16 6v12"/><circle cx="5.5" cy="12" r="1.5"/><circle cx="12" cy="10" r="1.5"/><circle cx="19" cy="13" r="1.5"/></svg><span>進行</span></button>
+  <button type="button" data-feature="ear" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 18a3 3 0 0 0 5-2c0-3 4-4 4-8a5 5 0 0 0-10 0"/><path d="M10 9a2 2 0 0 1 4 0c0 2-2 2-2 4"/></svg><span>耳・リズム</span></button>
+  <button type="button" data-feature="records" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 20V12m5 8V6m5 14v-5"/></svg><span>記録</span></button>
+ </nav>
+ <div id="study-panel">
+ <div class="workspace">
+ <section class="practice" aria-label="練習">
+ <nav class="modes" aria-label="学習モード"><button data-mode="forward" class="mode active" aria-pressed="true">位置 → 音名</button><button data-mode="reverse" class="mode" aria-pressed="false">音名 → 位置</button><button data-mode="find-all" class="mode" aria-pressed="false">全位置探索</button><button data-mode="study" class="mode" aria-pressed="false">全音名表示</button></nav>
+ <p id="study-focus" class="focus-banner" hidden><span id="study-focus-text"></span><button type="button" id="study-focus-end">苦手の練習を終える</button></p>
+ <div class="session-line"><span id="mode-label">位置から音名を思い出す</span><span id="progress-label"></span></div><div class="progress-track"><div id="progress-fill"></div></div>
+ <div class="prompt-row"><div class="question-area"><p id="question-kicker"></p><div class="feedback-slot"><p id="question-help"></p><h2 id="question"></h2><div id="answer-area" class="answer-area" aria-live="polite" aria-atomic="true"></div><div id="answer-input" class="answer-input" hidden></div></div></div><div class="actions"><button id="primary" class="primary">答えを表示 <span aria-hidden="true">↵</span></button><span class="keyboard-hint"><kbd>Space</kbd> で表示・次へ</span></div></div>
+
+ <div id="comparison-legend" class="comparison-legend" aria-label="比較対象の色" hidden></div>
+ <div class="board-shell"><div id="board" class="board" aria-label="ギター指板 0〜12フレット"></div></div>
+ <div class="board-caption"><span><i class="legend-dot"></i><span id="board-legend">出題位置</span></span><span><span id="string-direction">上：1弦 · 下：6弦</span> <span class="scroll-hint">／ 横にスクロールできます</span></span></div>
+ <div id="note-inspection" class="note-inspection" aria-live="polite" aria-atomic="true" hidden></div>
+ <div id="theory-summary" aria-live="polite" aria-atomic="true" hidden><div id="tone-list" class="tone-list"></div><p id="pattern-description" class="pattern-description"></p><p class="theory-note">R＝ルート。構成音はルートと度数に沿って表記します（E♯・B♭♭など）。</p><p class="theory-note">指板は構成音の位置を示します。コードの押さえ方・運指の指定ではありません。</p></div>
+ <div class="practice-footer"><span id="scope-summary"></span><span id="shuffle-label">一巡するまで、重複なし</span><span id="response-summary"></span></div>
+ </section>
+ <aside id="settings" class="settings" aria-label="出題設定">
+ <div class="settings-heading"><h2>プロパティ</h2><span id="candidate-count"></span></div>
+ <section id="study-tools" class="study-tools" aria-label="コード・スケール表示" hidden>
+  <h3 class="inspector-label">指板の表示</h3>
+  <div class="study-tabs" aria-label="指板に表示する音"><button data-study-view="all" aria-pressed="true">全音名</button><button data-study-view="chord" aria-pressed="false">コードトーン</button><button data-study-view="scale" aria-pressed="false">スケール</button></div>
+  <div id="theory-controls" class="theory-controls" hidden>
+   <label>ルート<select id="study-root" aria-label="ルート音"></select></label>
+   <label class="pattern-picker"><span id="pattern-label">コード</span><select id="study-pattern" aria-labelledby="pattern-label"></select></label>
+   <label>指板の表示<select id="tone-labels"><option value="both">音名＋度数</option><option value="name">音名</option><option value="degree">度数</option></select></label>
+  </div>
+  <div id="comparison-layers" class="comparison-layers" hidden></div>
+  <button id="add-layer" class="add-layer" type="button" hidden>＋ 比較対象を追加</button>
+  <button id="show-shapes" class="show-shapes" type="button" aria-haspopup="dialog" hidden>コードシェイプを見る</button>
+  <button id="scale-drone" class="show-shapes" type="button" aria-pressed="false" hidden>ドローン（ルート＋5度）を鳴らす</button>
+ </section>
+ <fieldset id="study-tuning"></fieldset>
+ <fieldset id="answer-method-settings" class="quiz-only" hidden><legend>回答方法（位置 → 音名）</legend><div class="notation-options"><label><input type="radio" name="answer-method" value="self">自己確認</label><label><input type="radio" name="answer-method" value="choice">選択肢</label><label><input type="radio" name="answer-method" value="name">音名入力</label></div><p class="setting-note">選択肢・音名入力では、正誤と反応時間を学習記録に残します。音名入力は A〜G で音名、↑↓ で ♯・♭、Enter で回答します。</p></fieldset>
+ <fieldset id="study-weighted-settings" class="quiz-only" hidden><legend>出題の順番</legend><label class="open-toggle"><span>苦手を優先 <small>復習の時期が来た位置・弱点・新しい位置を先に出す（既定はオフ：従来どおり一巡ごとにランダム）</small></span><input id="study-weighted" type="checkbox" role="switch"></label></fieldset>
+ <div id="study-range" class="quiz-only"></div>
+ <fieldset class="quiz-only"><legend>表示設定</legend><label class="open-toggle"><span>選択範囲を色で表示 <small>出題範囲以外を暗く表示</small></span><input id="highlight-range" type="checkbox" role="switch"></label><label class="open-toggle"><span>開放弦の音名を表示 <small>指板の左側・画面上部</small></span><input id="show-tuning" type="checkbox" role="switch"></label></fieldset>
+ <fieldset><legend>音名の表記</legend><div id="notation-options" class="notation-options"><label><input type="radio" name="notation" value="both">両方</label><label><input type="radio" name="notation" value="sharp">♯</label><label><input type="radio" name="notation" value="flat">♭</label></div><p class="setting-note" id="notation-example">例：C♯ / D♭</p></fieldset>
+ <details class="desktop-settings"><summary>設定の読み込み・書き出し</summary><button type="button" id="export-settings">設定を書き出す</button><label class="import-settings">設定を読み込む<input id="import-settings" type="file" accept="application/json,.json"></label><p id="transfer-status" role="status"></p></details>
+ </aside>
+ </div>
+ </div>
+ <section id="tuner-panel" class="tuner-panel" aria-label="チューナー" hidden>
+  <div id="tuner-display" class="tuner-display"><p class="tuner-kicker">CHROMATIC TUNER</p><h2 id="tuner-profile"></h2>
+   <div id="tuner-strings" class="tuner-strings" aria-label="目標音"></div>
+   <p id="tuner-target-name" class="tuner-target"></p><p id="tuner-target-frequency" class="setting-note"></p>
+   <output id="tuner-note" class="tuner-note">—</output><p id="tuner-frequency" class="tuner-frequency">— Hz</p>
+   <div class="tuner-meter" aria-label="音高のずれ"><span id="tuner-needle" class="tuner-needle" hidden></span><i></i></div>
+   <div class="tuner-scale"><span>低い −50</span><span>0</span><span>+50 高い</span></div><p id="tuner-cents" class="tuner-cents">— セント</p>
+   <p id="tuner-signal-status" role="status"></p><p class="tuner-help">単音を弾き、他の弦をミュートしてください。対応音域は25〜1500 Hz。弦を選ぶと、オクターブも一致する目標音を表示します。</p>
+  </div>
+  <div id="play-display" class="play-display" hidden>
+   <p class="tuner-kicker">SINGLE NOTE PRACTICE</p><h2 id="play-profile"></h2>
+   <p id="play-progress" class="play-progress"></p><p id="play-focus-banner" class="play-focus-banner" hidden></p><div class="play-question"><h3 id="play-target-note" class="play-target-note" aria-live="polite" aria-atomic="true">単音を弾く</h3></div>
+   <div class="play-board-shell"><div id="play-board" class="play-board" role="img" aria-label="指板"></div></div>
+   <section id="play-weak" class="play-weak" aria-labelledby="play-weak-title" hidden><h3 id="play-weak-title">苦手ランキング</h3>
+    <div class="play-weak-nav"><button type="button" id="play-weak-prev" aria-label="前の記録日">‹</button><select id="play-weak-date" aria-label="表示する日"></select><button type="button" id="play-weak-next" aria-label="次の記録日">›</button><button type="button" id="play-weak-today">今日</button></div>
+    <p id="play-weak-summary" class="setting-note"></p><p id="play-weak-octave" class="setting-note" hidden>オクターブ自由の結果は弦を指定しないため集計しません。</p>
+    <div id="play-weak-list" class="play-weak-list"></div><div class="play-weak-foot"><button type="button" id="play-weak-all" hidden></button><span id="play-weak-formula" class="play-weak-formula" hidden></span></div></section>
+   <div class="play-feedback"><p id="play-detected"></p><label class="play-stability-label">音高の安定<progress id="play-stability" max="1" value="0"></progress></label></div><p id="play-status" role="status"></p>
+   <div class="play-actions"><button type="button" id="play-pause" disabled>一時停止</button><button type="button" id="play-finish" disabled>練習を終了</button></div>
+   <div id="play-results" class="play-results" hidden><h3>今回の結果</h3><p id="play-result-summary"></p></div>
+  </div>
+  <aside class="audio-settings" aria-label="音声入力設定"><h3>音声入力</h3>
+   <div class="audio-actions"><button type="button" id="audio-start">入力を開始</button><button type="button" id="audio-stop" disabled>停止</button></div>
+   <div class="play-settings"><fieldset id="play-tuning"></fieldset><div id="play-range-settings"></div></div>
+   <div class="play-focus"><h4>苦手集中</h4><label class="open-toggle"><span>苦手を集中練習 <small>苦手な位置だけを出題</small></span><input id="play-focus" type="checkbox" role="switch"></label><label>出題数<select id="play-focus-count"><option value="5">5か所</option><option value="10" selected>10か所</option><option value="15">15か所</option></select></label><p id="play-focus-note" class="setting-note"></p></div>
+   <div class="play-options"><h4>入力設定</h4><label>許容幅<select id="play-tolerance"><option value="5">±5セント</option><option value="10" selected>±10セント</option><option value="20">±20セント</option></select></label><label>安定時間<select id="play-hold"><option value="200">200 ms</option><option value="350" selected>350 ms</option><option value="500">500 ms</option></select></label><label>オクターブ<select id="play-octave"><option value="exact">指定</option><option value="any">自由</option></select></label><p id="play-target-frequency" class="setting-note"></p></div>
+   <label>入力デバイス<select id="audio-device"><option value="">Windowsの既定入力</option></select></label>
+   <button type="button" id="audio-refresh">入力一覧を更新</button><p id="audio-device-status" class="setting-note" role="status"></p>
+   <label>入力チャンネル<select id="audio-channel"><option value="0">入力 1</option></select></label>
+   <label>基準 A4（Hz）<input id="audio-reference" type="number" min="400" max="480" step="0.1" value="440"></label>
+   <label>無音しきい値（dB）<input id="audio-gate" type="number" min="-80" max="-20" step="1" value="-55"></label>
+   <p class="setting-note">弱い音を拾うには値を下げ、周囲の音を抑えるには値を上げます。入力デバイス・チャンネル・感度の変更は停止中に行います。</p>
+   <p id="audio-settings-status" role="status"></p>
+   <p id="audio-activity" role="status"></p><label class="audio-level-label">入力レベル<meter id="audio-level" min="-120" max="0" low="-55" high="-3" optimum="-18" value="-120"></meter><span id="audio-level-text">— dB</span></label>
+   <p id="audio-stream-info" class="setting-note"></p>
+   <div class="play-reset"><div id="play-reset-confirm" class="records-confirm" hidden><p id="play-reset-text"></p><button type="button" id="play-reset-yes">リセットする</button><button type="button" id="play-reset-no">やめる</button></div><button type="button" id="play-reset">今日の練習記録をリセット</button><p id="play-reset-status" class="setting-note" role="status"></p></div>
+  </aside>
+ </section>
+ <section id="harmony-panel" class="harmony-panel" aria-label="ハーモニー" hidden>
+  <div class="harmony-view">
+   <nav class="modes harmony-kinds" aria-label="出題の種類"><button type="button" class="mode" data-kind="chord">コードトーン</button><button type="button" class="mode" data-kind="interval">インターバル</button><button type="button" class="mode" data-kind="arpeggio">アルペジオ</button><button type="button" class="mode" data-kind="key">調と機能</button><button type="button" class="mode" data-kind="tension">テンション<span class="badge-advanced">上級</span></button><button type="button" class="mode" data-kind="chord-scale">コード・スケール<span class="badge-advanced">上級</span></button></nav>
+   <p id="harmony-locked" class="setting-note" hidden></p>
+   <p id="harmony-focus" class="focus-banner" hidden><span id="harmony-focus-text"></span><button type="button" id="harmony-focus-end">苦手の練習を終える</button></p>
+   <div class="harmony-head"><p id="harmony-kicker" class="tuner-kicker">CHORD TONES</p><span id="harmony-progress" class="play-progress"></span></div>
+   <div class="harmony-card" aria-live="polite" aria-atomic="true"><h2 id="harmony-chord">コードトーン</h2><p id="harmony-role"></p></div>
+   <p id="harmony-scope" class="setting-note harmony-scope"></p>
+   <div id="harmony-input" class="answer-input" hidden></div>
+   <p id="harmony-heard" class="harmony-heard" hidden></p>
+   <div id="harmony-feedback" class="harmony-feedback" aria-live="polite"></div>
+   <p id="harmony-status" class="harmony-status" role="status"></p>
+   <div class="harmony-actions"><button type="button" id="harmony-primary" class="primary">開始</button><button type="button" id="harmony-skip">スキップ</button><button type="button" id="harmony-self">正解として扱う</button><button type="button" id="harmony-finish">終了</button></div>
+   <p id="harmony-keys" class="keyboard-hint"></p>
+   <div class="board-shell"><div id="harmony-board" class="board" aria-label="指板"></div></div>
+   <div id="harmony-results" class="harmony-results" hidden><h3>今回の結果</h3><p id="harmony-summary"></p><ul id="harmony-misses"></ul></div>
+  </div>
+  <aside class="harmony-settings" aria-label="ハーモニーの設定"><h3 id="harmony-settings-title">コードトーン</h3>
+   <div class="harmony-kind-settings" data-for="interval">
+    <label>インターバル<select id="interval-stage"><option value="1">段階1：短3度・長3度・完全5度・短7度・長7度</option><option value="2">段階2：＋完全4度・長6度・長2度・短2度・短6度</option><option value="3">段階3：＋増4度・減5度・増5度</option><option value="4">段階4：＋9度・11度・13度（複合音程）</option></select></label>
+    <label>方向<select id="interval-direction"><option value="up">上行</option><option value="down">下行</option><option value="both">両方</option></select></label>
+    <label>指板の形<select id="interval-board"><option value="off">使わない（音名で答える）</option><option value="same">同じ弦の中で</option><option value="adjacent">隣の弦で</option><option value="window">ルートから±4フレットで</option></select></label>
+   </div>
+   <div class="harmony-kind-settings" data-for="arpeggio">
+    <label>コード<select id="arp-chords"><option value="triads">トライアド（メジャー・マイナー・dim・aug）</option><option value="sevenths">7th（maj7・m7・7・m7♭5・dim7・m(maj7)）</option><option value="both">両方</option></select></label>
+    <label>転回<select id="arp-inversions"><option value="root">基本形のみ</option><option value="all">すべての転回形</option></select></label>
+    <label>順番<select id="arp-direction"><option value="up">上行</option><option value="down">下行</option><option value="updown">上行→下行</option></select></label>
+    <label>間違えたとき<select id="arp-error"><option value="restart">最初から</option><option value="wait">その音から</option></select></label>
+    <p class="setting-note">弦セットは楽器に合わせて選び、1弦に1音・5フレットの幅（最大4フレット差）に収まる形を出題します。この形で届かないコードは出題しません（ギターの dim7、4度チューニングのベースの m7・7・m7♭5・dim7 など）。演奏では音の高さの並びを判定し、弦は判定しません。</p>
+   </div>
+   <div class="harmony-kind-settings" data-for="key">
+    <label>出題<select id="key-types"><option value="all">すべて</option><option value="degree">ディグリー（ii は?）</option><option value="function">機能（T・SD・D）</option><option value="secondary">セカンダリードミナント</option></select></label>
+    <label>調<select id="key-modes"><option value="major">メジャー</option><option value="minor">マイナー（ナチュラル・ハーモニック）</option><option value="both">両方</option></select></label>
+    <p class="setting-note">機能はメジャーで I・iii・vi＝T、ii・IV＝SD、V・vii＝D。マイナーは流派による違いが大きいため、i＝T、iiø・iv＝SD、ハーモニックマイナーの V7＝D だけを出題します。</p>
+   </div>
+   <div class="harmony-kind-settings" data-for="chord">
+   <label>問う音<select id="harmony-mode"><option value="guide">3rd と 7th</option><option value="third">3rd</option><option value="seventh">7th</option><option value="all">構成音すべて</option><option value="ninth">9th</option></select></label>
+   <label>コード<select id="harmony-stage"><option value="triads">トライアド（メジャー・マイナー・dim・aug）</option><option value="1">段階1：maj7・m7・7</option><option value="2">段階2：＋m7♭5・dim7・m(maj7)</option><option value="3">段階3：＋6・m6・9・maj9・m9</option></select></label>
+   </div>
+   <div class="harmony-kind-settings" data-for="tension">
+    <p class="setting-note">7♭9・7♯9・7♯11・13・7♭13・m11・maj7♯11・6/9 の、それぞれを特徴づけるテンションを問います（G7♭9 の ♭9 は?）。♯11 と ♭5、♭13 と ♯5、♯9 と ♭3 は同じ高さでも別の度数として綴ります。</p>
+   </div>
+   <div class="harmony-kind-settings" data-for="chord-scale">
+    <p class="setting-note">コードと、その働き（メジャーキーの ii など）から、使うスケールを選びます。同じ Dm7 でも ii ならドリアン、iii ならフリジアンです。ほかの流派で使われるスケールは誤りの選択肢に出しません。答えのあとに、メロディックマイナーの何番目のモードか、アヴォイドノートを示します。</p>
+    <p id="harmony-avoid-policy" class="setting-note"></p>
+   </div>
+   <label data-for="chord interval tension chord-scale">ルート<select id="harmony-roots"><option value="standard">標準の12種類</option><option value="extended">拡張の17種類（C♯・D♯・G♯・A♯ も）</option></select></label>
+   <label>F♯ / G♭<select id="harmony-six"><option value="sharp">F♯</option><option value="flat">G♭</option></select></label>
+   <fieldset><legend>回答方法</legend><div class="notation-options harmony-methods"><label><input type="radio" name="harmony-method" value="choice">選択肢</label><label><input type="radio" name="harmony-method" value="name">音名入力</label><label><input type="radio" name="harmony-method" value="click">指板</label><label><input type="radio" name="harmony-method" value="play">演奏</label></div></fieldset>
+   <label class="open-toggle" data-for="chord interval tension"><span>綴りも厳密に判定 <small>同じ高さの別の綴りを不正解にする</small></span><input id="harmony-strict" type="checkbox" role="switch"></label>
+   <label>制限時間<select id="harmony-limit"><option value="0">なし</option><option value="5000">5秒</option><option value="3000">3秒</option><option value="2000">2秒</option></select></label>
+   <label class="open-toggle"><span>苦手を優先 <small>復習の時期が来た項目・弱点・新しい項目を先に出す（オフで従来のランダム）</small></span><input id="harmony-weighted" type="checkbox" role="switch"></label>
+   <label>長さ<select id="harmony-length"><option value="10">10問</option><option value="20">20問</option><option value="timed">60秒</option></select></label>
+   <p class="setting-note" data-for="chord interval tension">指板・演奏の範囲（演奏では、この範囲の最低音〜最高音を音域として判定します。弦は判定できません）。</p>
+   <div id="harmony-range" class="harmony-range" data-for="chord interval tension"></div>
+   <div id="harmony-audio" class="harmony-audio"></div>
+  </aside>
+ </section>
+ <section id="progression-panel" class="progression-panel" aria-label="進行" hidden>
+  <div class="harmony-view">
+   <nav class="modes harmony-kinds" aria-label="進行の種類"><button type="button" class="mode" data-prog-section="changes">コードチェンジ</button><button type="button" class="mode" data-prog-section="phrase">フレーズ</button></nav>
+   <div id="prog-area" class="ear-section">
+   <div class="harmony-head"><p class="tuner-kicker">CHORD CHANGES</p><span id="prog-progress" class="play-progress"></span></div>
+   <div id="prog-chart" class="prog-chart" aria-label="進行表"></div>
+   <div class="harmony-card" aria-live="polite" aria-atomic="true"><h2 id="prog-chord">進行</h2><p id="prog-target"></p><p id="prog-next" class="setting-note"></p></div>
+   <p id="prog-heard" class="harmony-heard" hidden></p>
+   <div id="prog-feedback" class="harmony-feedback" aria-live="polite"></div>
+   <p id="prog-status" class="harmony-status" role="status"></p>
+   <div class="harmony-actions"><button type="button" id="prog-primary" class="primary">開始</button><button type="button" id="prog-back">← 戻る</button><button type="button" id="prog-forward">進む →</button><button type="button" id="prog-skip">スキップ</button><button type="button" id="prog-finish">終了</button></div>
+   <p id="prog-keys" class="keyboard-hint"></p>
+   <p id="prog-board-caption" class="setting-note"></p>
+   <div class="board-shell"><div id="prog-board" class="board" aria-label="指板"></div></div>
+   <div id="prog-results" class="harmony-results" hidden><h3>今回の結果</h3><p id="prog-summary"></p><ul id="prog-misses"></ul></div>
+   </div>
+   <div id="phrase-area" class="ear-section" hidden>
+    <div class="harmony-head"><p class="tuner-kicker">PHRASE</p><span id="phrase-progress" class="play-progress"></span></div>
+    <div id="phrase-chart" class="prog-chart" aria-label="進行表"></div>
+    <div class="harmony-card" aria-live="polite" aria-atomic="true"><h2 id="phrase-title">フレーズ</h2><p id="phrase-instruction"></p><p id="phrase-motif" class="setting-note"></p><p id="phrase-constraint" class="phrase-constraint" hidden></p></div>
+    <p id="phrase-heard" class="harmony-heard" hidden></p>
+    <p id="phrase-status" class="harmony-status" role="status"></p>
+    <div class="harmony-actions"><button type="button" id="phrase-primary" class="primary">開始</button><button type="button" id="phrase-listen">モチーフを聴く (M)</button><button type="button" id="phrase-new">新しい課題</button><button type="button" id="phrase-draw">制約カードを引く</button></div>
+    <p class="keyboard-hint">Space 開始・停止 ／ M モチーフを聴く</p>
+    <p class="setting-note phrase-policy">採点はしません（「そのまま反復」「移して反復」だけは音の並びで一致を確かめます）。演奏は音高と時刻だけを記録します（録音はしません）。</p>
+    <div id="phrase-review" class="harmony-results" hidden><h3>演奏の記録</h3>
+     <div id="phrase-timeline" class="phrase-timeline" aria-label="演奏の記録"></div>
+     <p id="phrase-verdict"></p>
+     <p id="phrase-metrics" class="setting-note"></p>
+     <div class="harmony-actions"><button type="button" id="phrase-replay">自分の演奏を再生</button><button type="button" id="phrase-replay-motif">モチーフを聴く</button></div>
+     <fieldset id="phrase-checklist" class="phrase-checklist"><legend>自己評価（点数にはしません）</legend></fieldset>
+     <label class="phrase-memo">メモ（任意・200文字まで）<textarea id="phrase-memo" maxlength="200" rows="2"></textarea></label>
+     <div class="harmony-actions"><button type="button" id="phrase-save" class="primary">保存</button><button type="button" id="phrase-discard">保存しない</button></div>
+    </div>
+    <div class="harmony-results"><h3>保存した演奏（直近20件）</h3><ul id="phrase-takes" class="phrase-takes"></ul></div>
+   </div>
+  </div>
+  <aside class="harmony-settings prog-settings" aria-label="進行の設定">
+   <div id="phrase-settings" hidden><h3>フレーズ</h3>
+    <label>課題<select id="phrase-kind"></select></label>
+    <label>モチーフ<select id="phrase-source"><option value="library">ライブラリ</option><option value="random">ランダム</option></select></label>
+    <label id="phrase-shape-row">ライブラリのモチーフ<select id="phrase-shape"></select></label>
+    <label id="phrase-length-row">ランダムの音数<select id="phrase-length"><option value="2">2音</option><option value="3">3音</option><option value="4">4音</option><option value="5">5音</option></select></label>
+    <label>進行<select id="phrase-progression"></select></label>
+    <label id="phrase-key-row">調<select id="phrase-key"></select></label>
+    <label>テンポ（BPM）<input id="phrase-bpm" type="number" min="40" max="160" step="1"></label>
+    <label>繰り返し<select id="phrase-passes"><option value="1">1回</option><option value="2">2回</option><option value="4">4回</option></select></label>
+    <label>クリック<select id="phrase-click"><option value="all">すべての拍</option><option value="backbeat">2・4拍</option><option value="one">1拍目だけ</option><option value="none">なし</option></select></label>
+    <label>音量<input id="phrase-volume" type="range" min="0" max="1" step="0.05"></label>
+    <label class="open-toggle"><span>反復を音名だけで比べる <small>オクターブ違いも「そのまま反復」とする</small></span><input id="phrase-pitch-class" type="checkbox" role="switch"></label>
+    <label class="open-toggle"><span>課題に制約カードを付ける</span><input id="phrase-with-card" type="checkbox" role="switch"></label>
+    <p class="setting-note">最初に1小節カウントし、進行の上で自由に弾きます（最大64小節）。記録するのは、音声入力で確定した音（音高と、受け取った時刻のおおよそ ±0.1秒）だけです。同じ高さの音の連打は、音の立ち上がりの検出（試験的）が働かないと1音にまとまります。弦は判定できないため「1本の弦だけ」などは自己評価です。「5〜7フレットだけ」は、その範囲で出せない高さの音の数を参考として示します。</p>
+    <div id="phrase-audio" class="harmony-audio"></div>
+   </div>
+   <div id="prog-settings"><h3>コードチェンジ</h3>
+   <label>進行<select id="prog-select"></select></label>
+   <label id="prog-key-row">調<select id="prog-key"></select></label>
+   <label>段階<select id="prog-stage"><option value="root">1 ルート</option><option value="third">2 3rd</option><option value="seventh">3 7th</option><option value="guide">4 3rd と 7th</option><option value="any-chord-tone">5 コードトーンのどれか</option><option value="with-tensions">6 コードトーン＋9th</option><option value="free">7 自由（着地だけを表示・採点なし）</option><option value="line">ライン（ボイスリーディング・ステップ式）</option><option value="approach">アプローチ（上級・ステップ式）</option></select></label>
+   <div id="prog-approach-settings" class="prog-auto-settings">
+    <label>パターン<select id="prog-approach-pattern"></select></label>
+    <label>到達する音<select id="prog-approach-role"><option value="third">3rd</option><option value="seventh">7th</option><option value="root">ルート</option></select></label>
+    <p class="setting-note">各コードで、パターンの音を順に弾いて目標の音に到達します（例：Cmaj7 の 3rd へのエンクロージャーは F → D♯ → E）。最初の音はどのオクターブでもよく、そのあとの音はそこからの距離で判定します。半音の音は目標への導音として綴ります（E へは E♭ ではなく D♯）。全音階音は、進行の調の中のコードなら調の音階、そうでなければコードの種類の代表的なスケールから取ります。間違えた音は数えますが、パターンをやり直せば先へ進めます。</p>
+   </div>
+   <div id="prog-line-settings" class="prog-auto-settings">
+    <label>最初の音<select id="prog-line-start"><option value="free">自由</option><option value="third">3rd から</option><option value="seventh">7th から</option></select></label>
+    <label>許可する度数<select id="prog-line-degrees"><option value="guide">3rd と 7th（ガイドトーン）</option><option value="chord-tones">コードトーン</option><option value="tensions">コードトーン＋テンション（9th・13th）（上級）</option></select></label>
+    <label>移動の上限<select id="prog-line-max"><option value="2">2半音まで（共通音・半音・全音）</option><option value="4">4半音まで</option></select></label>
+    <label class="open-toggle"><span>次に使える位置を表示（ヒント）</span><input id="prog-line-hint" type="checkbox" role="switch"></label>
+    <p class="setting-note">各コードで1音ずつ弾き、前の音から近い距離でつなぎます。条件を満たす経路はすべて正解です。終わると、あなたのラインの特徴と、同じ最初の音から成り立つ他のラインの例を示します（良し悪しの評価はしません）。伸ばしている音が次のコードでも使えるなら、弾き直さなくても次へ進みます。</p>
+   </div>
+   <p id="prog-locked" class="setting-note" hidden></p>
+   <label>方式<select id="prog-mode"><option value="step">ステップ式（正解で次へ）</option><option value="auto">自動進行（テンポに合わせる）</option></select></label>
+   <div id="prog-auto-settings" class="prog-auto-settings">
+    <label>テンポ（BPM）<input id="prog-bpm" type="number" min="40" max="160" step="1"></label>
+    <label>コードの長さ<select id="prog-scale"><option value="1">進行どおり</option><option value="2">2倍</option></select></label>
+    <label>クリック<select id="prog-click"><option value="all">すべての拍</option><option value="backbeat">2・4拍</option><option value="one">1拍目だけ</option><option value="none">なし</option></select></label>
+    <label>クリックの音量<input id="prog-volume" type="range" min="0" max="1" step="0.05"></label>
+    <button type="button" id="prog-test-click">クリックを鳴らしてみる</button>
+    <p class="setting-note">最初に1小節カウントします。各コードの窓はコードの始まりから終わりまでで、音の検出の遅れを補うために終わりから0.3秒の猶予があります。各コードに2拍以上・1秒以上が必要です。マイクで入力している場合は、クリック音が入らないようヘッドホンを使ってください（ライン入力なら問題ありません）。</p>
+   </div>
+   <label class="open-toggle" id="prog-ninth-row"><span>調から 9th を導く <small>調のある進行のダイアトニックコードだけ。マイナーの V7・iiø7 は ♭9。既定は構成式の 9th だけ</small></span><input id="prog-ninth" type="checkbox" role="switch"></label>
+   <label>繰り返し<select id="prog-repeats"><option value="1">1回</option><option value="2">2回</option><option value="4">4回</option><option value="0">止めるまで</option></select></label>
+   <fieldset><legend>回答方法</legend><div class="notation-options"><label><input type="radio" name="prog-method" value="play">演奏</label><label><input type="radio" name="prog-method" value="click">指板</label></div></fieldset>
+   <label class="open-toggle"><span>答えの音名を表示 <small>例：G7 → 3rd（B）</small></span><input id="prog-show-answer" type="checkbox" role="switch"></label>
+   <label>指板のガイド<select id="prog-guide"><option value="off">表示しない</option><option value="after">正解後に表示</option><option value="on">常に表示</option></select></label>
+   <p class="setting-note">演奏では指板の範囲の最低音〜最高音を音域とし、どのオクターブでも正解です（弦は判定しません）。前のコードから伸ばしている音が次のコードでも正解なら、弾き直さなくても正解です（共通音の保持）。</p>
+   <div id="prog-range" class="harmony-range"></div>
+   <details class="prog-editor"><summary>進行を作る・編集する</summary>
+    <label>名前<input id="prog-name" maxlength="40"></label>
+    <label>コード（小節は | で区切る）<textarea id="prog-text" rows="4" placeholder="Dm7 G7 | Cmaj7 | Cmaj7 |"></textarea></label>
+    <label>調（任意。9th を調から導くときに使う）<select id="prog-edit-key"></select></label>
+    <p id="prog-preview" class="setting-note" aria-live="polite"></p>
+    <div class="prog-editor-actions"><button type="button" id="prog-save">保存</button><button type="button" id="prog-duplicate">複製</button><button type="button" id="prog-delete">削除…</button></div>
+    <div id="prog-confirm" class="records-confirm" hidden><p>この進行を削除します。元に戻せません。</p><button type="button" id="prog-confirm-yes">削除する</button><button type="button" id="prog-confirm-no">やめる</button></div>
+    <p id="prog-edit-status" class="setting-note" role="status"></p>
+   </details>
+   <div id="prog-audio" class="harmony-audio"></div>
+   </div>
+  </aside>
+ </section>
+ <section id="ear-panel" class="ear-panel" aria-label="耳・リズム" hidden>
+  <div class="harmony-view">
+   <nav class="modes harmony-kinds" aria-label="耳・リズムの種類"><button type="button" class="mode" data-ear-section="ear">聴音</button><button type="button" class="mode" data-ear-section="rhythm">リズム</button></nav>
+   <div id="rhythm-area" class="ear-section" hidden>
+    <p id="rhythm-focus" class="focus-banner" hidden><span id="rhythm-focus-text"></span><button type="button" id="rhythm-focus-end">苦手の練習を終える</button></p>
+    <div class="harmony-head"><p class="tuner-kicker">RHYTHM</p><span id="rhythm-progress" class="play-progress"></span></div>
+    <div class="harmony-card" aria-live="polite" aria-atomic="true"><h2 id="rhythm-title">リズム</h2><p id="rhythm-subtitle"></p></div>
+    <div id="rhythm-grid" class="rhythm-grid" aria-label="リズムのパターン"></div>
+    <button type="button" id="rhythm-pad" class="rhythm-pad">ここをタップ（Space・Enter・フットスイッチでも可）</button>
+    <div id="rhythm-feedback" class="harmony-feedback" aria-live="polite"></div>
+    <p id="rhythm-status" class="harmony-status" role="status"></p>
+    <div class="harmony-actions"><button type="button" id="rhythm-primary" class="primary">開始</button><button type="button" id="rhythm-calibrate">遅延を補正する</button><button type="button" id="rhythm-stop">停止</button></div>
+   </div>
+   <div id="ear-area" class="ear-section">
+   <p id="ear-focus" class="focus-banner" hidden><span id="ear-focus-text"></span><button type="button" id="ear-focus-end">苦手の練習を終える</button></p>
+   <div class="harmony-head"><p class="tuner-kicker">EAR TRAINING</p><span id="ear-progress" class="play-progress"></span></div>
+   <div class="harmony-card" aria-live="polite" aria-atomic="true"><h2 id="ear-title">聴音</h2><p id="ear-subtitle"></p></div>
+   <p id="ear-dots" class="ear-dots" aria-live="polite"></p>
+   <p id="ear-heard" class="harmony-heard" hidden></p>
+   <div id="ear-feedback" class="harmony-feedback" aria-live="polite"></div>
+   <p id="ear-status" class="harmony-status" role="status"></p>
+   <div class="harmony-actions"><button type="button" id="ear-primary" class="primary">開始</button><button type="button" id="ear-replay">もう一度聴く (R)</button><button type="button" id="ear-skip">答えを見る (S)</button><button type="button" id="ear-self">正解として扱う</button><button type="button" id="ear-finish">終了</button></div>
+   <p class="keyboard-hint">Space 開始・次へ ／ R もう一度聴く ／ S 答えを見る</p>
+   <div class="board-shell"><div id="ear-board" class="board" aria-label="指板"></div></div>
+   <div id="ear-results" class="harmony-results" hidden><h3>今回の結果</h3><p id="ear-summary"></p><ul id="ear-list"></ul></div>
+   </div>
+  </div>
+  <aside class="harmony-settings" aria-label="耳・リズムの設定">
+   <div id="rhythm-settings" hidden><h3>リズム</h3>
+    <label>パターン<select id="rhythm-pattern"></select></label>
+    <label>変形<select id="rhythm-transform"><option value="none">そのまま</option><option value="shift">1拍ずらす</option><option value="double">倍の長さ</option><option value="half">半分の長さ</option></select></label>
+    <label>テンポ（BPM）<input id="rhythm-bpm" type="number" min="40" max="200" step="1"></label>
+    <label>小節数<select id="rhythm-bars"><option value="2">2小節</option><option value="4">4小節</option><option value="8">8小節</option></select></label>
+    <label>クリック<select id="rhythm-click"><option value="all">すべての拍</option><option value="backbeat">2・4拍</option><option value="one">1拍目だけ</option><option value="none">なし（カウントだけ）</option></select></label>
+    <label id="rhythm-swing-row">スウィング <span id="rhythm-swing-value"></span><input id="rhythm-swing" type="range" min="50" max="75" step="1"></label>
+    <fieldset><legend>打ち方</legend><div class="notation-options"><label><input type="radio" name="rhythm-method" value="tap">タップ</label><label><input type="radio" name="rhythm-method" value="play">ギター（試験的）</label></div></fieldset>
+    <label>クリックの音量<input id="rhythm-volume" type="range" min="0" max="1" step="0.05"></label>
+    <p id="rhythm-calibration" class="setting-note"></p>
+    <button type="button" id="rhythm-calibration-clear">補正値を消す</button>
+    <div id="rhythm-audio" class="harmony-audio" hidden></div>
+    <p class="setting-note">最初に1小節カウントします。タップの時刻は「ぴったり ±35 ms」「許容」（隣の音と重ならない幅、最大 ±70 ms）で判定し、それより外れたものは早い・遅い、予定にない打点は余分、打たなかった音は抜けとします。平均のずれ（走る・もたる傾向）とばらつきを数値で示します。「ギター（試験的）」では、音声入力で検出した音の立ち上がり（ピッキング）の時刻で判定します。音の高さは問いません。補正はタップとは別に、ミュートした弦をクリックに合わせてピッキングして行います。</p>
+   </div>
+   <div id="ear-settings"><h3>聴音</h3>
+   <label>種類<select id="ear-kind"><option value="single">単音</option><option value="interval">インターバル（2音。1音目は表示）</option><option value="melody">メロディ（2〜8音）</option><option value="chord">コードトーンのメロディ</option></select></label>
+   <label>調<select id="ear-key"></select></label>
+   <label class="open-toggle"><span>難しさを自動で調整 <small>2回続けて正解で1段上、1回の誤りで1段下</small></span><input id="ear-auto" type="checkbox" role="switch"></label>
+   <label>段階<select id="ear-level"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select></label>
+   <label>オクターブ<select id="ear-octave"><option value="pc">音名だけ一致すればよい</option><option value="exact">オクターブも一致</option></select></label>
+   <label>間違えたとき<select id="ear-error"><option value="reset">その場で1音目から</option><option value="end">最後まで弾いてから比べる</option></select></label>
+   <label>調の手がかり<select id="ear-context"><option value="tonic">主音を鳴らす</option><option value="cadence">I–IV–V–I を鳴らす</option><option value="none">なし</option></select></label>
+   <label>速さ<select id="ear-speed"><option value="0.8">ゆっくり</option><option value="0.6">ふつう</option><option value="0.45">速い</option></select></label>
+   <label>聞き直し<select id="ear-replays"><option value="0">何度でも</option><option value="3">3回まで</option></select></label>
+   <label class="open-toggle"><span>同じ音の連続も出題 <small>弾き直しを音の立ち上がりで区別します（試験的）</small></span><input id="ear-repeats" type="checkbox" role="switch"></label>
+   <label>問題数<select id="ear-length"><option value="10">10問</option><option value="20">20問</option></select></label>
+   <fieldset><legend>答え方</legend><div class="notation-options harmony-methods"><label><input type="radio" name="ear-method" value="play">ギターで弾く</label><label><input type="radio" name="ear-method" value="sing">歌う</label><label><input type="radio" name="ear-method" value="sing-then-play">歌ってから弾く</label></div></fieldset>
+   <label>歌う声の入力チャンネル<select id="ear-sing-channel"><option value="same">ギターと同じ</option><option value="0">入力 1</option><option value="1">入力 2</option><option value="2">入力 3</option><option value="3">入力 4</option></select></label>
+   <p class="setting-note">再生中と再生後0.3秒は、入力を判定しません。マイクで入力している場合は、再生音が入らないようヘッドホンを使ってください。歌は音名だけで判定し（最も近い半音）、0.3秒保った音を1音とします。同じ高さの音が続く問題は、「同じ音の連続も出題」をオンにしたときだけ出します（弾き直しは音の立ち上がりで区別します）。</p>
+   <div id="ear-audio" class="harmony-audio"></div>
+   </div>
+  </aside>
+ </section>
+ <section id="records-panel" class="records-panel" aria-label="学習記録" hidden>
+  <div class="records-view">
+   <p class="tuner-kicker">PRACTICE RECORD</p><h2>学習記録</h2>
+   <section class="today-menu" aria-labelledby="today-title"><div class="today-head"><h3 id="today-title">今日の練習</h3><span id="today-total" class="setting-note"></span></div><ol id="today-steps" class="today-steps"></ol><p id="today-note" class="setting-note"></p><button type="button" id="today-start" class="primary">今日の練習を始める</button></section>
+   <div class="records-cards">
+    <section class="records-card"><h3>今日</h3><p id="records-today" class="records-figure"></p><p id="records-today-detail" class="setting-note"></p></section>
+    <section class="records-card"><h3>直近7日</h3><p id="records-week" class="records-figure"></p><p id="records-week-detail" class="setting-note"></p></section>
+    <section class="records-card"><h3>連続練習</h3><p id="records-streak" class="records-figure"></p><p id="records-streak-detail" class="setting-note"></p></section>
+    <section class="records-card"><h3>項目</h3><p id="records-items" class="records-figure"></p><p id="records-items-detail" class="setting-note"></p></section>
+    <section class="records-card"><h3>上級（L7）<span class="badge-advanced">上級</span></h3><p id="records-advanced" class="records-figure"></p><p id="records-advanced-detail" class="setting-note"></p></section>
+   </div>
+   <section class="records-section" aria-labelledby="levels-title"><h3 id="levels-title">レベル</h3><p class="setting-note">各レベルの項目の80%が「定着」すると到達です（知識・指板・演奏のどの層でも可）。</p><div id="records-levels" class="records-levels"></div></section>
+   <section class="records-section" aria-labelledby="weak-title"><h3 id="weak-title">弱点</h3>
+    <div class="weak-controls"><label>表<select id="weak-table"></select></label><label>層<select id="weak-layer"><option value="knowledge">知識（選択・入力）</option><option value="fretboard">指板（クリック）</option><option value="performance">演奏</option></select></label></div>
+    <p id="weak-legend" class="setting-note">記号：◎ 90%以上 ・ ○ 75%以上 ・ △ 50%以上 ・ × 50%未満 ・ … データ不足（5回未満）。下段は反応時間の中央値。スキップ・自己判定・入力の問題は含めません。</p>
+    <div class="weak-scroll"><table id="weak-grid" class="weak-grid"></table></div>
+    <p id="weak-empty" class="setting-note" hidden></p>
+    <div class="weak-action"><span id="weak-selection" class="setting-note">セルを選ぶと、その項目だけを練習できます</span><button type="button" id="weak-practice" disabled>苦手を練習</button></div>
+   </section>
+   <section class="records-section" aria-labelledby="input-title"><h3 id="input-title">入力の状態</h3><p id="input-health" class="setting-note"></p><button type="button" id="input-tuner" hidden>チューナーで入力を確認する</button></section>
+   <table class="records-days"><caption>日別の記録</caption><thead><tr><th scope="col">日付</th><th scope="col">問題数</th><th scope="col">正解</th><th scope="col">回答時間</th></tr></thead><tbody id="records-days"></tbody></table>
+   <p class="setting-note">回答時間は各問題で答えるまでにかかった時間の合計です（演奏は音の検出にかかる時間を含みます）。「定着」は間隔を空けた別の日にも素早く正解できた項目、「復習」は今日が見直しの日になっている項目です。</p>
+  </div>
+  <aside class="records-settings" aria-label="学習記録の管理"><h3>記録の管理</h3>
+   <p class="setting-note">学習記録はこのPCにだけ保存します。音声は保存しません。</p>
+   <label class="open-toggle"><span>上級をすべて表示 <small>テンション・コード・スケール・アプローチ・ラインのテンションを、定着を待たずに開く</small></span><input id="records-show-advanced" type="checkbox" role="switch"></label>
+   <label class="open-toggle"><span>ドリアンの13もアヴォイドとして示す <small>流派によって扱いが異なります（既定は示さない）</small></span><input id="records-dorian-13" type="checkbox" role="switch"></label>
+   <fieldset class="target-settings"><legend>目標の反応時間 <small>これより速い正解で定着に近づきます。変更は今後の回答から適用します（過去の記録は計算し直しません）</small></legend>
+    <label>選択<select id="target-choice" data-target="choice"></select></label><label>音名入力<select id="target-name" data-target="name"></select></label><label>指板のクリック<select id="target-click" data-target="click"></select></label><label>演奏・歌<select id="target-play" data-target="play"></select></label></fieldset>
+   <button type="button" id="records-export">記録を書き出す</button>
+   <label class="records-import">記録を読み込む<input id="records-import" type="file" accept="application/json,.json"></label>
+   <div id="records-confirm" class="records-confirm" hidden><p id="records-confirm-text"></p><button type="button" id="records-confirm-yes"></button><button type="button" id="records-confirm-no">やめる</button></div>
+   <button type="button" id="records-clear">記録を消去…</button>
+   <p id="records-status" role="status"></p>
+  </aside>
+ </section>
+ <div id="today-bar" class="today-bar" role="region" aria-label="今日の練習" hidden><span id="today-bar-step"></span><span id="today-bar-time" class="today-bar-time"></span><button type="button" id="today-bar-next" class="primary">次へ →</button><button type="button" id="today-bar-stop">終了</button></div>
+ <p id="save-status" class="save-alert" role="alert"></p>
+ </main>
+ <dialog id="chord-shapes" aria-labelledby="shapes-title">
+  <header class="shapes-header"><h2 id="shapes-title">コードシェイプ</h2><form method="dialog"><button class="close-shapes" aria-label="コードシェイプを閉じる">閉じる ×</button></form></header>
+  <p id="shapes-guide" class="shapes-help">左から6弦→1弦。○＝開放弦、×＝弾かない弦。丸の中は度数（R＝ルート）です。</p>
+  <p class="shapes-help">押さえ方の例です。形に応じてセーハを使います。指番号は指定せず、練習範囲に関係なく表示します。</p>
+  <div id="shapes-content"></div>
+ </dialog>
+</div>
+</body></html>

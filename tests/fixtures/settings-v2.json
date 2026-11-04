@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 2,
+  "lastInstrument": "bass5",
+  "bassStringCount": 5,
+  "profiles": {},
+  "instruments": {
+    "guitar": {
+      "selectedTuningId": "user:test-guitar",
+      "customTunings": [{ "id": "user:test-guitar", "name": "独自設定", "instrumentId": "guitar", "openMidi": [62, 57, 55, 50, 45, 38] }]
+    },
+    "bass4": { "selectedTuningId": "half-step-down", "customTunings": [] },
+    "bass5": { "selectedTuningId": "drop-a", "customTunings": [] }
+  }
+}

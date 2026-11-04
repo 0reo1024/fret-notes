@@ -1,0 +1,47 @@
+const assert=require('node:assert/strict');
+const T=require('../dist/theory.js');
+const C=require('../dist/core.js');
+function tones(view,id,root){return T.tones({...T.normalize(),studyView:view,studyRoot:root,[view==='chord'?'studyChord':'studyScale']:id});}
+const pitches=(view,id,root)=>tones(view,id,root).map(t=>t.pitch);
+const names=(view,id,root)=>tones(view,id,root).map(t=>t.name);
+assert.deepEqual(names('chord','major','C'),['C','E','G']);
+assert.deepEqual(names('chord','minor','C'),['C','E♭','G']);
+assert.deepEqual(names('chord','maj7','C♯'),['C♯','E♯','G♯','B♯']);
+assert.deepEqual(names('chord','min7','E♭'),['E♭','G♭','B♭','D♭']);
+assert.deepEqual(names('chord','dom7','G'),['G','B','D','F']);
+assert.deepEqual(names('chord','half-dim','B'),['B','D','F','A']);
+assert.deepEqual(names('chord','dim7','C'),['C','E♭','G♭','B♭♭']);
+assert.deepEqual(names('chord','nine','C'),['C','E','G','B♭','D']);
+assert.deepEqual(names('scale','hmp5','E'),['E','F','G♯','A','B','C','D']);
+assert.deepEqual(pitches('scale','hmp5','E').sort((a,b)=>a-b),pitches('scale','harmonic-minor','A').sort((a,b)=>a-b));
+assert.deepEqual(pitches('scale','altered','C'),[0,1,3,4,6,8,10]);
+assert.deepEqual(pitches('scale','diminished-wh','C'),[0,2,3,5,6,8,9,11]);
+assert.deepEqual(pitches('scale','diminished-hw','C'),[0,1,3,4,6,7,9,10]);
+assert.deepEqual(names('scale','melodic-minor','A'),['A','B','C','D','E','F♯','G♯']);
+const modes=['ionian','dorian','phrygian','lydian','mixolydian','aeolian','locrian'];
+const major=[0,2,4,5,7,9,11];
+modes.forEach((mode,i)=>assert.deepEqual(pitches('scale',mode,'C'),major.map((_,n)=>(major[(n+i)%7]-major[i]+12)%12)));
+let combinations=0;
+for(const [view,catalog] of [['chord',T.chords],['scale',T.scales]])for(const pattern of catalog)for(const root of T.roots){
+ const result=tones(view,pattern.id,root);
+ assert.equal(new Set(result.map(t=>t.pitch)).size,result.length);
+ assert.equal(result[0].name,root);
+ for(const tone of result)assert.equal(T.pitchOf(tone.name),tone.pitch);
+ const markers=C.candidates(C.normalize()).filter(p=>result.some(t=>t.pitch===C.pitch(p)));
+ assert(markers.length>0);
+ assert(markers.every(p=>result.some(t=>T.pitchOf(t.name)===C.pitch(p))));
+ combinations++;
+}
+const saved=T.normalize({studyView:'scale',studyRoot:'E',studyScale:'hmp5',studyChord:'half-dim',toneLabels:'degree'});
+assert.deepEqual(T.normalize(JSON.parse(JSON.stringify(saved))),saved);
+assert.equal(T.normalize({studyScale:'invalid',studyRoot:'<script>',toneLabels:'invalid'}).studyRoot,'C');
+assert.equal(T.selected(T.normalize()),null);
+assert.equal(C.candidates({...C.normalize(),...saved}).length,78);
+const comparison=T.normalize({studyView:'scale',studyRoot:'C',studyScale:'minor-pentatonic',studyLayers:[{kind:'scale',root:'C',pattern:'dorian'},{kind:'chord',root:'C',pattern:'min7'}]});
+const layers=T.layers(comparison);
+assert.equal(layers.length,3);
+assert.deepEqual(layers.map(layer=>layer.tones.find(t=>t.pitch===2)?.name||null),[null,'D',null]);
+assert.deepEqual(layers.map(layer=>layer.tones.find(t=>t.pitch===3)?.name),['E♭','E♭','E♭']);
+assert.equal(T.layers(T.normalize(JSON.parse(JSON.stringify(comparison)))).length,3);
+assert.equal(T.normalize({studyLayers:[{kind:'scale',root:'<script>',pattern:'invalid'}]}).studyLayers[0].root,'C');
+console.log(`Passed: ${T.chords.length} chords / ${T.scales.length} scales, ${combinations} root combinations, requested chords, seven mode rotations, HMP5 relation, enharmonic spellings, fretboard pitch matching, and persisted settings.`);

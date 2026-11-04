@@ -1,5 +1,7 @@
 # Fret Notes Desktop
 
+**ダウンロード：** https://0reo1024.github.io/fret-notes/ （Windows / macOS）
+
 Work版のFret Notesを、Tauri 2 + TypeScript + RustでWindowsデスクトップソフトへ段階的に移行しています。現在は第4段階（単音の演奏練習）の実装版1.1.0です（即興トレーニング拡張の P0〜P15 と、演奏練習の苦手ランキングを含む。[拡張計画](docs/training-expansion/README.md)）。実機接続の再確認は後日に残しています。
 
 ## 起動

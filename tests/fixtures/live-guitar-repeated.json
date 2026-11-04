@@ -1,5 +1,5 @@
 {
-  "source": "P0 2026-10-27: 3rd string open G3 picked 4 times with a mute after each, then 4 times without muting (tuning: all fourths E2 A2 D3 G3 C4 F4; Nano Cortex input 1; debug probe build)",
+  "source": "P0 2026-10-27: 3rd string open G3 picked 4 times with a mute after each, then 4 times without muting (tuning: all fourths E2 A2 D3 G3 C4 F4; debug probe build)",
   "targets": [
     55
   ],

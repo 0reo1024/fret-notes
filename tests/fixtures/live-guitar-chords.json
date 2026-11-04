@@ -1,5 +1,5 @@
 {
-  "source": "P0 2026-10-27: six open strings strummed (E2 A2 D3 G3 C4 F4), muted, then a G#m chord strummed (tuning: all fourths E2 A2 D3 G3 C4 F4; Nano Cortex input 1; debug probe build)",
+  "source": "P0 2026-10-27: six open strings strummed (E2 A2 D3 G3 C4 F4), muted, then a G#m chord strummed (tuning: all fourths E2 A2 D3 G3 C4 F4; debug probe build)",
   "chords": [
     "E A D G C F",
     "G#m"

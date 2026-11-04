@@ -1,5 +1,5 @@
 {
-  "source": "P0 2026-10-27: 1st string open F4, 1st string 12F F5, 5th string open A2; each ~2 s then muted (tuning: all fourths E2 A2 D3 G3 C4 F4; Nano Cortex input 1; debug probe build)",
+  "source": "P0 2026-10-27: 1st string open F4, 1st string 12F F5, 5th string open A2; each ~2 s then muted (tuning: all fourths E2 A2 D3 G3 C4 F4; debug probe build)",
   "targets": [
     65,
     77,

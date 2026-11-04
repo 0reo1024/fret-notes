@@ -20,7 +20,7 @@
 - `src-tauri/src/audio/analysis.rs` の定数（窓2048、約12 kHz、信頼度0.85、30セント・3回で stable）と、`engine.rs` の通知間隔（67 ms）。
 
 ## 作業
-1. 利用者に入力機器（例: Nano Cortex (3+4) / 入力1）を接続してもらい、`cargo run --manifest-path src-tauri/Cargo.toml --bin audio-probe` でデバイスIDを確認する。**利用者が楽器を演奏する必要がある。各録取りの前に、何を弾くかを日本語で具体的に伝え、準備ができたか確認してから実行する。**
+1. 利用者に入力機器を接続してもらい、`cargo run --manifest-path src-tauri/Cargo.toml --bin audio-probe` でデバイスIDを確認する。**利用者が楽器を演奏する必要がある。各録取りの前に、何を弾くかを日本語で具体的に伝え、準備ができたか確認してから実行する。**
 2. 次の録取りを `audio-live-probe --report <一時ファイル>` で行う。
    - `--report` の出力は、`play-guitar-events.json` の形式とは異なる。中身は started、states、timeline（audioTimeMs/state/frequency/levelDb）など。
    - そのため、次の形に変換してから `tests/fixtures/` に保存する。

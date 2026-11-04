@@ -1,5 +1,5 @@
 {
-  "source": "P0 2026-10-27: guitar 6th string open E2, one pick held ~10 s (tuning: all fourths E2 A2 D3 G3 C4 F4; Nano Cortex input 1; debug probe build)",
+  "source": "P0 2026-10-27: guitar 6th string open E2, one pick held ~10 s (tuning: all fourths E2 A2 D3 G3 C4 F4; debug probe build)",
   "targets": [
     40
   ],

@@ -1,5 +1,5 @@
 {
-  "source": "P0 2026-10-27: 2nd string 1F-3F-5F legato (C#4 D#4 F4), then 1st string open F4 after a short gap (tuning: all fourths E2 A2 D3 G3 C4 F4; Nano Cortex input 1; debug probe build)",
+  "source": "P0 2026-10-27: 2nd string 1F-3F-5F legato (C#4 D#4 F4), then 1st string open F4 after a short gap (tuning: all fourths E2 A2 D3 G3 C4 F4; debug probe build)",
   "targets": [
     61,
     63,

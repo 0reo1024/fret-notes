@@ -41,6 +41,8 @@ jobs:
       - uses: swatinem/rust-cache@v2
         with: { workspaces: src-tauri }
       - run: npm ci
+      # The universal bundler only lipos the main binary; drop the dev-only audio probes.
+      - run: rm -rf src-tauri/src/bin
       - run: npx tauri build --target universal-apple-darwin
       - name: Check bundle
         run: |

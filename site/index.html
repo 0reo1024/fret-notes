@@ -6,125 +6,247 @@
 <title>Fret Notes ダウンロード</title>
 <meta name="description" content="ギター・ベースの指板学習と演奏練習のデスクトップアプリ Fret Notes のダウンロード">
 <link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f6f5f2; --surface: #ffffff; --text: #1d1d1b; --muted: #66645e;
-    --line: #e2dfd8; --accent: #c2621c; --accent-text: #ffffff; --code: #efece6;
+    --paper: #eef0ec; --ink: #1f2421; --muted: #59605b; --rule: #cfd3cd;
+    --rosewood: #3a2620; --rosewood-edge: #2a1b17; --nickel: #b9bec4;
+    --amber: #f0b24a; --pearl: #ede6d6;
+    --btn: #1f2421; --btn-text: #eef0ec; --code: #e2e5df;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #1c1c1b; --surface: #262624; --text: #eceae4; --muted: #a29f97;
-      --line: #3a3936; --accent: #e07b33; --accent-text: #1c1c1b; --code: #31302d;
+      --paper: #1d201e; --ink: #e4e7e1; --muted: #a2a9a3; --rule: #393e3a;
+      --btn: #f0b24a; --btn-text: #1f2421; --code: #2b302c;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #1c1c1b; --surface: #262624; --text: #eceae4; --muted: #a29f97;
-    --line: #3a3936; --accent: #e07b33; --accent-text: #1c1c1b; --code: #31302d;
+    --paper: #1d201e; --ink: #e4e7e1; --muted: #a2a9a3; --rule: #393e3a;
+    --btn: #f0b24a; --btn-text: #1f2421; --code: #2b302c;
   }
   * { box-sizing: border-box; }
   body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
-    line-height: 1.7;
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    font-size: 16px; line-height: 1.8;
   }
-  main { max-width: 820px; margin: 0 auto; padding: 56px 16px 72px; }
-  header { display: flex; align-items: center; gap: 18px; margin-bottom: 12px; }
-  header img { width: 64px; height: 64px; border-radius: 14px; }
-  h1 { font-size: 2rem; margin: 0; letter-spacing: .01em; }
-  .lead { color: var(--muted); margin: 0 0 36px; }
-  .version { font-size: .9rem; color: var(--muted); }
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-  .card {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
-    padding: 22px; display: flex; flex-direction: column; gap: 10px;
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+  /* Hero: title above a fretboard you can point at */
+  .intro { padding-top: 64px; padding-bottom: 28px; }
+  .intro h1 {
+    margin: 0; font-weight: 900; font-size: clamp(2.6rem, 8vw, 4.6rem);
+    line-height: 1; letter-spacing: -0.02em;
   }
-  .card.recommended { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-  .card h2 { margin: 0; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
-  .badge { font-size: .72rem; font-weight: 600; color: var(--accent); border: 1px solid var(--accent); border-radius: 99px; padding: 0 8px; display: none; }
-  .recommended .badge { display: inline-block; }
-  .card p { margin: 0; color: var(--muted); font-size: .92rem; }
+  .intro p { margin: 18px 0 0; max-width: 34em; color: var(--muted); font-size: 1.05rem; }
+  .board {
+    background: var(--rosewood); border-top: 6px solid var(--rosewood-edge); border-bottom: 6px solid var(--rosewood-edge);
+  }
+  .board .wrap { padding-top: 18px; padding-bottom: 10px; }
+  .board svg { display: block; width: 100%; height: auto; user-select: none; }
+  .board .hint { margin: 0; padding: 6px 0 4px; color: #cdb8a8; font-size: .85rem; }
+  .board .hint b { color: var(--amber); font-weight: 700; }
+  .dot circle { transition: r .12s; }
+  .dot text { font-weight: 700; font-size: 13px; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  .cell { fill: transparent; cursor: default; }
+  .probe { opacity: 0; pointer-events: none; }
+  .probe.on { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .dot.enter { animation: pluck .35s ease-out backwards; }
+    @keyframes pluck { from { opacity: 0; transform: scale(.4); } }
+  }
+  .dot { transform-box: fill-box; transform-origin: center; }
+
+  /* Downloads */
+  .downloads { display: grid; grid-template-columns: 1fr 1fr; margin: 52px 0 0; }
+  .dl { padding: 4px 32px 8px 0; }
+  .dl + .dl { padding: 4px 0 8px 32px; border-left: 1px solid var(--rule); }
+  .dl h2 { margin: 0; font-size: 1.6rem; font-weight: 900; }
+  .dl .req { margin: 4px 0 18px; color: var(--muted); font-size: .92rem; }
   .btn {
-    margin-top: auto; display: inline-block; text-align: center; text-decoration: none;
-    background: var(--accent); color: var(--accent-text); font-weight: 600;
-    padding: 11px 16px; border-radius: 10px;
+    display: inline-block; text-decoration: none; background: var(--btn); color: var(--btn-text);
+    font-weight: 700; padding: 12px 20px; border-radius: 6px;
   }
-  .btn:hover { filter: brightness(1.08); }
-  section { margin-top: 44px; }
-  section h2 { font-size: 1.15rem; margin: 0 0 10px; }
-  ol, ul { padding-left: 1.3em; margin: 0; }
-  li { margin: 4px 0; }
-  code { background: var(--code); border-radius: 5px; padding: 1px 6px; font-size: .88em; }
-  .note { color: var(--muted); font-size: .9rem; }
-  footer { margin-top: 56px; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 16px; }
-  a { color: var(--accent); }
+  .btn:hover { filter: brightness(1.15); }
+  .btn:focus-visible, a:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
+  .dl.yours h2::after {
+    content: "お使いのOS"; margin-left: 12px; vertical-align: middle;
+    font-size: .78rem; font-weight: 700; color: var(--ink); background: var(--amber); padding: 2px 8px; border-radius: 4px;
+  }
+  .dl .size { display: block; margin-top: 10px; color: var(--muted); font-size: .85rem; }
+  .version { margin: 20px 0 0; color: var(--muted); font-size: .92rem; }
+
+  section { margin-top: 64px; }
+  section h2 { font-size: 1.3rem; font-weight: 900; margin: 0 0 14px; }
+  .first-run { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
+  .first-run h3 { margin: 0 0 6px; font-size: 1rem; }
+  .first-run p { margin: 0 0 14px; max-width: 32em; }
+  .first-run .mic { grid-column: 1 / -1; color: var(--muted); }
+  code { background: var(--code); border-radius: 4px; padding: 1px 6px; font-size: .86em; word-break: break-all; }
+  .features { columns: 2; column-gap: 32px; padding: 0; margin: 0; list-style: none; }
+  .features li { break-inside: avoid; padding: 0 0 10px 18px; position: relative; }
+  .features li::before {
+    content: ""; position: absolute; left: 0; top: .62em; width: 8px; height: 8px; border-radius: 50%; background: var(--amber);
+  }
+  .update p { margin: 0 0 8px; max-width: 40em; }
+  footer.wrap { margin-top: 72px; padding-top: 18px; padding-bottom: 48px; border-top: 1px solid var(--rule); color: var(--muted); font-size: .9rem; display: flex; gap: 24px; flex-wrap: wrap; }
+  a { color: inherit; text-underline-offset: 3px; }
+
+  @media (max-width: 640px) {
+    .intro { padding-top: 40px; }
+    .downloads, .first-run { grid-template-columns: 1fr; }
+    .dl, .dl + .dl { padding: 0 0 28px; border-left: 0; }
+    .dl + .dl { padding-top: 28px; border-top: 1px solid var(--rule); }
+    .features { columns: 1; }
+  }
 </style>
 </head>
 <body>
-<main>
-  <header>
-    <img src="icon.png" alt="">
-    <div>
-      <h1>Fret Notes</h1>
-      <div class="version" id="version">最新版</div>
-    </div>
-  </header>
-  <p class="lead">ギター・ベースの指板学習、コード・スケール表示、チューナー、単音の演奏練習をひとつにまとめたデスクトップアプリです。</p>
+<header class="wrap intro">
+  <h1>Fret Notes</h1>
+  <p>指板の音名を覚え、コードとスケールを確かめ、実際に弾いて練習する。ギターとベースのためのデスクトップアプリです。</p>
+</header>
 
-  <div class="cards">
-    <div class="card" id="card-windows">
-      <h2>Windows <span class="badge">お使いのOS</span></h2>
-      <p>Windows 10 / 11（64ビット）。インストーラーを実行するとスタートメニューとデスクトップにショートカットを作ります。</p>
-      <a class="btn" href="https://github.com/0reo1024/fret-notes/releases/latest/download/FretNotes-Setup-windows-x64.exe">Windows版をダウンロード (.exe)</a>
+<div class="board" aria-hidden="true">
+  <div class="wrap">
+    <svg id="fretboard"></svg>
+    <p class="hint">白い点が C メジャースケール、<b>黄色</b>がルートの C。フレットにカーソルを合わせると音名が出ます。</p>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="downloads">
+    <div class="dl" id="dl-windows">
+      <h2>Windows</h2>
+      <p class="req">Windows 10 / 11（64ビット）</p>
+      <a class="btn" href="https://github.com/0reo1024/fret-notes/releases/latest/download/FretNotes-Setup-windows-x64.exe">Windows版をダウンロード</a>
+      <span class="size">インストーラー（.exe）</span>
     </div>
-    <div class="card" id="card-mac">
-      <h2>macOS <span class="badge">お使いのOS</span></h2>
-      <p>macOS 11 以降（Apple シリコン・Intel 両対応）。.dmg を開き、Fret Notes を「アプリケーション」へドラッグします。</p>
-      <a class="btn" href="https://github.com/0reo1024/fret-notes/releases/latest/download/FretNotes-macos-universal.dmg">macOS版をダウンロード (.dmg)</a>
+    <div class="dl" id="dl-mac">
+      <h2>macOS</h2>
+      <p class="req">macOS 11 以降、Apple シリコンと Intel の両方に対応</p>
+      <a class="btn" href="https://github.com/0reo1024/fret-notes/releases/latest/download/FretNotes-macos-universal.dmg">macOS版をダウンロード</a>
+      <span class="size">ディスクイメージ（.dmg）。開いて「アプリケーション」へドラッグします</span>
     </div>
   </div>
+  <p class="version" id="version"></p>
 
   <section>
     <h2>はじめて起動するとき</h2>
-    <p class="note">このアプリはコード署名をしていないため、初回起動時にOSの警告が出ます。</p>
-    <ul>
-      <li><strong>Windows：</strong>「WindowsによってPCが保護されました」と出たら「詳細情報」→「実行」を押します。Microsoft Edge WebView2 Runtime を使います（Windows 11 には標準で入っています）。</li>
-      <li><strong>macOS：</strong>「開けません」と出たら一度閉じ、「システム設定」→「プライバシーとセキュリティ」の下にある「このまま開く」を押します。開かない場合はターミナルで <code>xattr -cr "/Applications/Fret Notes.app"</code> を実行してください。</li>
-      <li>チューナーと演奏練習で音声入力を開始すると、マイク（オーディオ入力）の使用許可を求められます。許可してください。</li>
-    </ul>
+    <div class="first-run">
+      <div>
+        <h3>Windows</h3>
+        <p>「WindowsによってPCが保護されました」と出たら、「詳細情報」を押してから「実行」を押します。Microsoft Edge WebView2 Runtime を使います（Windows 11 には最初から入っています）。</p>
+      </div>
+      <div>
+        <h3>macOS</h3>
+        <p>「開けません」と出たら一度閉じ、「システム設定」の「プライバシーとセキュリティ」で「このまま開く」を押します。それでも開かないときは、ターミナルで <code>xattr -cr "/Applications/Fret Notes.app"</code> を実行します。</p>
+      </div>
+      <p class="mic">コード署名をしていないため、初回だけこの警告が出ます。チューナーや演奏練習で入力を始めるとマイクの使用許可を求められるので、許可してください。</p>
+    </div>
   </section>
 
   <section>
-    <h2>おもな機能</h2>
-    <ul>
-      <li>ギター・4弦/5弦ベース、標準・Drop D/Drop A・半音下げ・独自チューニング</li>
-      <li>位置→音名、音名→位置のクイズと反応時間の記録</li>
-      <li>19種類のコード、21種類のスケール、度数表示とコードシェイプ</li>
-      <li>クロマチックチューナー（A4基準 400〜480 Hz）</li>
-      <li>単音の演奏練習、コード進行に合わせたコードトーン練習、リズム・聴音トレーニング</li>
-      <li>学習記録、苦手ポジションの練習</li>
+    <h2>できること</h2>
+    <ul class="features">
+      <li>ギター、4弦・5弦ベース。標準、Drop D、Drop A、半音下げ、独自チューニング</li>
+      <li>位置から音名、音名から位置を答えるクイズ。反応時間も記録</li>
+      <li>19種類のコードと21種類のスケールを指板に表示。度数とコードシェイプ</li>
+      <li>クロマチックチューナー（A4 = 400〜480 Hz）</li>
+      <li>ギターで単音を弾いて答える演奏練習</li>
+      <li>コード進行に合わせてコードトーンを弾く練習</li>
+      <li>リズムと聴音のトレーニング</li>
+      <li>学習記録と、苦手なポジションの集中練習</li>
     </ul>
   </section>
 
-  <section>
+  <section class="update">
     <h2>更新とアンインストール</h2>
-    <ul>
-      <li>新しい版は同じ手順で上書きインストールできます。設定と記録は引き継がれます。</li>
-      <li>Windowsは「設定」→「アプリ」から、macOSは「アプリケーション」から削除します。</li>
-    </ul>
+    <p>新しい版も同じ手順で上書きインストールできます。設定と記録はそのまま残ります。</p>
+    <p>削除するときは、Windows は「設定」の「アプリ」から、macOS は「アプリケーション」フォルダーから行います。</p>
   </section>
-
-  <footer>
-    <a href="https://github.com/0reo1024/fret-notes/releases">過去のリリース</a> ・
-    <a href="https://github.com/0reo1024/fret-notes">ソースコード (GitHub)</a>
-  </footer>
 </main>
+
+<footer class="wrap">
+  <a href="https://github.com/0reo1024/fret-notes/releases">過去のリリース</a>
+  <a href="https://github.com/0reo1024/fret-notes">ソースコード（GitHub）</a>
+</footer>
+
 <script>
+  // Fretboard hero: C major scale on a standard-tuned guitar, string 1 on top.
+  const NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const SCALE = new Set([0, 2, 4, 5, 7, 9, 11]);
+  const OPEN = [4, 11, 7, 2, 9, 4]; // E B G D A E
+  const INLAYS = [3, 5, 7, 9, 15, 17];
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('fretboard');
+  const el = (tag, attrs, parent) => {
+    const node = document.createElementNS(NS, tag);
+    for (const k in attrs) node.setAttribute(k, attrs[k]);
+    parent.appendChild(node);
+    return node;
+  };
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function draw(animate) {
+    const frets = svg.parentElement.clientWidth < 560 ? 7 : 12;
+    const nut = 34, fretW = 66, rowH = 34, top = 20;
+    const width = nut + frets * fretW + 12, height = top * 2 + rowH * 5;
+    const x = f => f === 0 ? nut / 2 : nut + (f - 0.5) * fretW;
+    const y = s => top + s * rowH;
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.replaceChildren();
+
+    for (const f of INLAYS.filter(f => f <= frets)) el('circle', { cx: x(f), cy: height / 2, r: 7, fill: '#5a4038' }, svg);
+    if (frets >= 12) for (const s of [1.5, 3.5]) el('circle', { cx: x(12), cy: top + s * rowH, r: 7, fill: '#5a4038' }, svg);
+    el('rect', { x: nut - 6, y: top - 10, width: 6, height: rowH * 5 + 20, fill: '#e8e2d4' }, svg);
+    for (let f = 1; f <= frets; f++) el('rect', { x: nut + f * fretW - 2, y: top - 10, width: 3, height: rowH * 5 + 20, fill: '#b9bec4' }, svg);
+    for (let s = 0; s < 6; s++) el('line', { x1: 0, x2: width, y1: y(s), y2: y(s), stroke: '#c9ced3', 'stroke-width': 1 + s * 0.35 }, svg);
+
+    const probe = el('g', { class: 'probe' }, svg);
+    const probeDot = el('circle', { r: 13, fill: '#2a1b17', stroke: '#cdb8a8', 'stroke-width': 1.5 }, probe);
+    const probeText = el('text', { fill: '#ede6d6', 'font-size': 12, 'font-weight': 700, 'text-anchor': 'middle', 'dominant-baseline': 'central' }, probe);
+
+    let order = 0;
+    for (let f = 0; f <= frets; f++) {
+      for (let s = 0; s < 6; s++) {
+        const pc = (OPEN[s] + f) % 12;
+        const cell = el('rect', { class: 'cell', x: f === 0 ? 0 : nut + (f - 1) * fretW, y: y(s) - rowH / 2, width: f === 0 ? nut : fretW, height: rowH }, svg);
+        if (SCALE.has(pc)) {
+          const g = el('g', { class: 'dot' + (animate ? ' enter' : '') }, svg);
+          if (animate) g.style.animationDelay = `${120 + order++ * 14}ms`;
+          el('circle', { cx: x(f), cy: y(s), r: 13, fill: pc === 0 ? '#f0b24a' : '#ede6d6' }, g);
+          el('text', { x: x(f), y: y(s), fill: '#2a1b17' }, g).textContent = NAMES[pc];
+        } else {
+          cell.addEventListener('pointerenter', () => {
+            probeDot.setAttribute('cx', x(f)); probeDot.setAttribute('cy', y(s));
+            probeText.setAttribute('x', x(f)); probeText.setAttribute('y', y(s));
+            probeText.textContent = NAMES[pc];
+            probe.classList.add('on');
+          });
+          cell.addEventListener('pointerleave', () => probe.classList.remove('on'));
+        }
+      }
+    }
+    svg.appendChild(probe);
+  }
+
+  draw(!reduceMotion);
+  let lastFrets = null;
+  new ResizeObserver(() => {
+    const frets = svg.parentElement.clientWidth < 560 ? 7 : 12;
+    if (frets !== lastFrets && lastFrets !== null) draw(false);
+    lastFrets = frets;
+  }).observe(svg.parentElement);
+
   const ua = navigator.userAgent;
   const os = /Mac/i.test(ua) && !/iPhone|iPad/i.test(ua) ? 'mac' : /Win/i.test(ua) ? 'windows' : null;
-  if (os) document.getElementById('card-' + os).classList.add('recommended');
+  if (os) document.getElementById('dl-' + os).classList.add('yours');
   fetch('https://api.github.com/repos/0reo1024/fret-notes/releases/latest')
     .then(r => r.ok ? r.json() : null)
-    .then(r => { if (r && r.tag_name) document.getElementById('version').textContent = 'バージョン ' + r.tag_name.replace(/^v/, ''); })
+    .then(r => { if (r && r.tag_name) document.getElementById('version').textContent = `最新版 ${r.tag_name.replace(/^v/, '')}`; })
     .catch(() => {});
 </script>
 </body>

@@ -44,10 +44,8 @@
   .board {
     background: var(--rosewood); border-top: 6px solid var(--rosewood-edge); border-bottom: 6px solid var(--rosewood-edge);
   }
-  .board .wrap { padding-top: 18px; padding-bottom: 10px; }
+  .board .wrap { padding-top: 18px; padding-bottom: 18px; }
   .board svg { display: block; width: 100%; height: auto; user-select: none; }
-  .board .hint { margin: 0; padding: 6px 0 4px; color: #cdb8a8; font-size: .85rem; }
-  .board .hint b { color: var(--amber); font-weight: 700; }
   .dot circle { transition: r .12s; }
   .dot text { font-weight: 700; font-size: 13px; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
   .cell { fill: transparent; cursor: default; }
@@ -112,7 +110,6 @@
 <div class="board" aria-hidden="true">
   <div class="wrap">
     <svg id="fretboard"></svg>
-    <p class="hint">白い点が C メジャースケール、<b>黄色</b>がルートの C。フレットにカーソルを合わせると音名が出ます。</p>
   </div>
 </div>
 
